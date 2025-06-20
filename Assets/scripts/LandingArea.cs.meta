@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 30a04da0bc23b7448b9719ce2d8c36ca
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 228575
+  packageName: Simple Airplane Controller
+  packageVersion: 1.3
+  assetPath: Assets/HeneGames/Simple Airplane Controller/Scripts/LandingArea.cs
+  uploadId: 682889

@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: d236260ee0d659a4383b8680de7ec2ad
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 228575
+  packageName: Simple Airplane Controller
+  packageVersion: 1.3
+  assetPath: Assets/HeneGames/Simple Airplane Controller/Scripts/SimpleAirPlaneController.cs
+  uploadId: 682889

@@ -21,9 +21,6 @@ public class PlaneInterfaceControll : MonoBehaviour
 
     private bool isDead=false;
 
-
-
-
     private void Start()
     {
         BrokenMap.SetActive(false);
@@ -33,7 +30,7 @@ public class PlaneInterfaceControll : MonoBehaviour
 
     private void Awake()
     {
-        controller = Plane.GetComponent<SimpleAirPlaneController>();
+        controller = GameObject.FindGameObjectWithTag("PlayerPlane").GetComponent<SimpleAirPlaneController>();
     }
 
 

@@ -10160,7 +10160,7 @@ GameObject:
   - component: {fileID: 6680194764728300442}
   m_Layer: 0
   m_Name: SeaDuck
-  m_TagString: Untagged
+  m_TagString: PlayerPlane
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -10212,8 +10212,7 @@ MonoBehaviour:
   yawTurboMultiplier: 0.5
   pitchTurboMultiplier: 0.5
   rollTurboMultiplier: 0.5
-  defaultSpeed: 30
-  turboSpeed: 50
+  defaultSpeed: 50
   accelerating: 8
   deaccelerating: 1
   turboHeatingSpeed: 17.6
@@ -10241,7 +10240,7 @@ MonoBehaviour:
   turbineLightTurbo: 5
   turbineLights: []
   crashCollidersRoot: {fileID: 8736839649805236958}
-  takeoffLenght: 100
+  takeoffLenght: 30
   danger: {fileID: 8300000, guid: 4fb0faf435a20644296048b83371c9ad, type: 3}
   explouse: {fileID: 0}
   firePoint: {fileID: 434697526470780726}

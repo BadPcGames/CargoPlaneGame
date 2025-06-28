@@ -93,9 +93,6 @@ namespace HeneGames.Airplane
         [Range(5f, 100f)]
         [SerializeField] private float defaultSpeed = 10f;
 
-        [Range(10f, 200f)]
-        [SerializeField] private float turboSpeed = 20f;
-
         [Range(0.1f, 50f)]
         [SerializeField] private float accelerating = 10f;
 
@@ -184,6 +181,7 @@ namespace HeneGames.Airplane
         [SerializeField] private float maxCargo = 200f;
         [SerializeField] private float maxHealth = 100f;
         private float health;
+        private float turboSpeed;
 
         private void Start()
         {
@@ -443,7 +441,7 @@ namespace HeneGames.Airplane
             }
 
             //Move forward
-            transform.Translate(Vector3.forward * currentSpeed * Time.deltaTime);
+            transform.Translate((Vector3.forward+new Vector3(0,0.3f,0)) * currentSpeed * Time.deltaTime);
 
             //Far enough from the runaway go back to flying state
             float _distanceToRunway = Vector3.Distance(transform.position, currentRunway.transform.position);
@@ -733,7 +731,10 @@ namespace HeneGames.Airplane
             planeIsDead = true;
             if (!isAIPlane)
             {
-                PlaneUi.GetComponent<PlaneInterfaceControll>().DeadPlaneInterface();
+                if (PlaneUi != null)
+                {
+                    PlaneUi.GetComponent<PlaneInterfaceControll>().DeadPlaneInterface();
+                }
             }
         }
 

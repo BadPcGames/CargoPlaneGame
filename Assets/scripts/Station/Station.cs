@@ -16,7 +16,7 @@ public class Station : MonoBehaviour
 
     private void Start()
     {
-        name = "Station" + Id;
+        name = "Station";
     }
 
     public Transform getPosition()
@@ -27,6 +27,11 @@ public class Station : MonoBehaviour
     public int getId()
     {
         return Id;
+    }
+
+    public void setId(int value)
+    {
+        Id=value;
     }
 
 

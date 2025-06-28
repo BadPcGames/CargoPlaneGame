@@ -10114,8 +10114,7 @@ MonoBehaviour:
   yawTurboMultiplier: 0.5
   pitchTurboMultiplier: 0.5
   rollTurboMultiplier: 0.5
-  defaultSpeed: 30
-  turboSpeed: 50
+  defaultSpeed: 50
   accelerating: 8
   deaccelerating: 1
   turboHeatingSpeed: 17.6
@@ -10147,6 +10146,7 @@ MonoBehaviour:
   danger: {fileID: 8300000, guid: 4fb0faf435a20644296048b83371c9ad, type: 3}
   explouse: {fileID: 0}
   firePoint: {fileID: 434697526470780726}
+  bulletDamage: 1
   fireDistance: 100
   fireAngleThreshold: 5
   bulletSpeed: 100
@@ -10154,6 +10154,8 @@ MonoBehaviour:
   lastFireTime: -999
   spreadAngle: 2
   maxAimAngle: 15
+  maxCargo: 200
+  maxHealth: 100
 --- !u!54 &6000215176582953689
 Rigidbody:
   m_ObjectHideFlags: 0

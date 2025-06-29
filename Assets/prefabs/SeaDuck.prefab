@@ -10158,6 +10158,7 @@ GameObject:
   - component: {fileID: 5159784980364410503}
   - component: {fileID: 6000215176582953689}
   - component: {fileID: 6680194764728300442}
+  - component: {fileID: 7697198323579117147}
   m_Layer: 0
   m_Name: SeaDuck
   m_TagString: PlayerPlane
@@ -10252,8 +10253,6 @@ MonoBehaviour:
   lastFireTime: -999
   spreadAngle: 2
   maxAimAngle: 15
-  maxCargo: 200
-  maxHealth: 100
 --- !u!54 &6000215176582953689
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -10301,6 +10300,20 @@ MonoBehaviour:
   - {fileID: 3336389225813596225}
   - {fileID: 1003884439032511932}
   - {fileID: 7377849112279614025}
+--- !u!114 &7697198323579117147
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6126436154110243637}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 546668986828c984eb9d70a91539ca36, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MaxHealth: 100
+  CargoSpace: 100
 --- !u!1 &6330720459147056592
 GameObject:
   m_ObjectHideFlags: 0

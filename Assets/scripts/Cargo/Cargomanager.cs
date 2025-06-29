@@ -29,16 +29,21 @@ public class Cargomanager : MonoBehaviour
 
         for (int i = 0; i < count; i++)
         {
+            float randomSpace = Random.Range(50, 300);
             cargoList.Add(new Cargo(stationsForDelivery[Random.Range(0, stationsForDelivery.Count())],
-                                                        Random.Range(0, 100),
+                                                        randomSpace,
                                                         currentStation));
         }
     }
 
+    public List<Cargo> getCargoList()
+    {
+        return cargoList;
+    }
 
     public void chooseCargo(int id)
     {
-       gameObject.GetComponent<PlayerStats>().setCargo(cargoList[id]);
+       gameObject.GetComponent<PlayerStats>().LoadCargoToPlane(cargoList[id]);
     }
 
     public void tryUnloadPlane(Transform station)

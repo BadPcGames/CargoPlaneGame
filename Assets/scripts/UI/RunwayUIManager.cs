@@ -4,6 +4,7 @@ using Unity.VisualScripting;
 using System;
 using System.Collections;
 using UnityEngine.UI;
+using Assets.scripts.PlaneController;
 
 namespace HeneGames.Airplane
 {
@@ -14,8 +15,8 @@ namespace HeneGames.Airplane
         [SerializeField] private GameObject uiContent;
         [SerializeField] private GameObject player;
 
-        [SerializeField] private GameObject cargoCardPrefab; // Префаб карточки
-        [SerializeField] private Transform cargoListContent; // Контейнер контента
+        [SerializeField] private GameObject cargoCardPrefab; 
+        [SerializeField] private Transform cargoListContent; 
 
         private GameObject planeUi;
         private Station station;
@@ -34,7 +35,7 @@ namespace HeneGames.Airplane
 
         public void OnLoadCargoButton(int index)
         {
-            debugText.text = player.GetComponent<PlayerStats>().LoadCargoToPlane(index);
+             player.GetComponent<Cargomanager>().chooseCargo(index);
         }
 
         public void OnUnloadCargoButton()
@@ -54,10 +55,9 @@ namespace HeneGames.Airplane
                 uiContent.SetActive(true);
                 if (!cargoGenerated)
                 {
-                    player.GetComponent<PlayerStats>().GanarateCargo(20, station.getId());
+                    player.GetComponent<Cargomanager>().GanarateCargo(40, station.getId());
                     GenerateCargoCards(); 
                     cargoGenerated = true;
-                    Debug.Log("[RunwayUI] Cargos generated");
                 }
             }
             else if (runway.AriplaneIsTakingOff())
@@ -80,7 +80,7 @@ namespace HeneGames.Airplane
             }
         }
 
-            public void LetFly()
+        public void LetFly()
         {
             runway.TakeOf();
             planeUi.SetActive(true);
@@ -89,24 +89,36 @@ namespace HeneGames.Airplane
 
         private void GenerateCargoCards()
         {
-            // Очистить старые карточки
             foreach (Transform child in cargoListContent)
             {
                 Destroy(child.gameObject);
             }
 
-            var cargoList = player.GetComponent<PlayerStats>().getCargoList();
+            var cargoList = player.GetComponent<Cargomanager>().getCargoList();
 
             for (int i = 0; i < cargoList.Count; i++)
             {
-                int index = i; // Копия для замыкания
-
+                int index = i; 
+                //поиск текстовых полей интерфейса
                 GameObject card = Instantiate(cargoCardPrefab, cargoListContent);
                 Text descriptionText = card.transform.Find("Description").GetComponent<Text>();
+                Text priceText = card.transform.Find("Price").GetComponent<Text>();
+                Text distanceText = card.transform.Find("Distance").GetComponent<Text>();
+                Text nameText = card.transform.Find("CargoName").GetComponent<Text>();
                 Button acceptButton = card.transform.Find("AcceptButton").GetComponent<Button>();
 
-                // Настроить описание (можно изменить как угодно)
-                descriptionText.text = $"Цель: {cargoList[i].getTarget().getId()}, Награда: {cargoList[i].getReword()}";
+                //заполнения интерфейса
+                nameText.text = $"{cargoList[i].getName()}";
+                descriptionText.text = $"Доставь груз {cargoList[i].getName()}, требующий {cargoList[i].getRequiredSpace()} пространства, к станции: {cargoList[i].getTarget().getId()}";
+                priceText.text = $"Награда: {cargoList[i].getReword()}";
+                distanceText.text = $"Растояние: {cargoList[i].getDistance()}";
+
+                bool canGetCargo = player.GetComponent<PlayerStats>().Plane.GetComponent<PlaneStats>().getCargoSpace() > cargoList[i].getRequiredSpace();
+                if (!canGetCargo)
+                {
+                    descriptionText.text = descriptionText.text + "\n Груз слишком большой для вашего самолёта";
+                    acceptButton.enabled =canGetCargo;
+                }
 
                 acceptButton.onClick.AddListener(() => OnLoadCargoButton(index));
             }

@@ -5,6 +5,7 @@ using Cinemachine;
 using System;
 using Unity.VisualScripting;
 using System.Collections;
+using Assets.scripts.PlaneController;
 
 namespace HeneGames.Airplane
 {
@@ -177,10 +178,6 @@ namespace HeneGames.Airplane
         [SerializeField] private float spreadAngle = 2f; // Максимальный разброс в градусах
         [SerializeField] private float maxAimAngle = 15f; // Максимальный угол, при котором разрешено стрелять, но с разбросом
 
-        [Header("Plane Stats")]
-        [SerializeField] private float maxCargo = 200f;
-        [SerializeField] private float maxHealth = 100f;
-        private float health;
         private float turboSpeed;
 
         private void Start()
@@ -414,10 +411,8 @@ namespace HeneGames.Airplane
             //Set local rotation to zero
             transform.localRotation = Quaternion.Lerp(transform.localRotation, Quaternion.Euler(0f,0f,0f), 2f * Time.deltaTime);
 
-            if (turboHeat != 0 || health != maxHealth)
-            {
-                RestartPlane();
-            }
+            RestartPlane();
+            
         }
 
         #endregion
@@ -509,8 +504,8 @@ namespace HeneGames.Airplane
 
         private void RestartPlane()
         {
-            health = maxHealth;
             //health = 10;
+            gameObject.GetComponent<PlaneStats>().ResetHealth();
             turboOverheat = false;
             turboHeat = 0;
             OverHeatParticles(false);
@@ -570,25 +565,19 @@ namespace HeneGames.Airplane
             if (_root == null)
                 return;
 
-            //Get colliders from root transform
             Collider[] colliders = _root.GetComponentsInChildren<Collider>();
 
-            //If there are colliders put components in them
             for (int i = 0; i < colliders.Length; i++)
             {
-                //Change collider to trigger
                 colliders[i].isTrigger = true;
 
                 GameObject _currentObject = colliders[i].gameObject;
 
-                //Add airplane collider to it and put it on the list
                 SimpleAirPlaneCollider _airplaneCollider = _currentObject.AddComponent<SimpleAirPlaneCollider>();
                 airPlaneColliders.Add(_airplaneCollider);
 
-                //Add airplane conroller reference to collider
                 _airplaneCollider.controller = this;
 
-                //Add rigid body to it
                 Rigidbody _rb = _currentObject.AddComponent<Rigidbody>();
                 _rb.useGravity = false;
                 _rb.isKinematic = true;
@@ -634,7 +623,6 @@ namespace HeneGames.Airplane
             {
                 if (airPlaneColliders[i].collideSometing)
                 {
-                    //Reset colliders
                     foreach(SimpleAirPlaneCollider _airPlaneCollider in airPlaneColliders)
                     {
                         _airPlaneCollider.collideSometing = false;
@@ -649,38 +637,14 @@ namespace HeneGames.Airplane
 
         private void recalculateDebafs()
         {
+            float health = gameObject.GetComponent<PlaneStats>().getHealth();
+            float maxHealth = gameObject.GetComponent<PlaneStats>().getMaxHealth();
             debafs = 1-(health / maxHealth);
         }
 
         #endregion
 
         #region Public methods
-
-
-        public void TakeDamage(float value)
-        {
-            health-=value;
-            Debug.Log("helth"+health);
-            if (health <= 0)
-            {
-                Crash();
-            }
-            recalculateDebafs();
-        }
-
-        public float GetMaxCargo()
-        {
-            return maxCargo;
-        }
-
-        public float GetHealth()
-        {
-            return health;
-        }
-        public float GetMaxHealth()
-        {
-            return maxHealth;
-        }
 
         public float getPitch()
         {
@@ -980,7 +944,7 @@ namespace HeneGames.Airplane
                 {
                     try
                     {
-                        hit.collider.transform.parent.transform.parent.transform.parent.transform.gameObject.GetComponent<SimpleAirPlaneController>().TakeDamage(bulletDamage);
+                        hit.collider.transform.parent.transform.parent.transform.parent.transform.gameObject.GetComponent<PlaneStats>().TakeDamage(bulletDamage);
                     }
                     catch (NullReferenceException)
                     {

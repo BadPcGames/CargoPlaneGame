@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
 
-
 namespace Assets.scripts.WorldGenerator
 {
-
     [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
     public class ChunkController : MonoBehaviour
     {
@@ -22,23 +20,31 @@ namespace Assets.scripts.WorldGenerator
         [SerializeField] bool visualizeNoise;
         [SerializeField] bool use3DNoise;
 
+        [Header("Chunk color")]
+        [SerializeField] Gradient terrainGradient;
+        [SerializeField] private Material material;
+
         private List<Vector3> vertices = new List<Vector3>();
         private List<int> triangles = new List<int>();
         private float[,,] heights;
 
+        private Mesh mesh;
+        private Texture2D gradientTexture;
         private MeshFilter meshFilter;
+        private MeshRenderer meshRenderer;
+        private MeshCollider meshCollider;
+
         private FastNoiseLite noise;
         private Vector3 chunkOffset;
         private bool isContainRunway;
         private FastNoiseLite biomeNoise;
-
 
         public void SetChunk(Vector3 offset, bool _isContainRunway)
         {
             meshFilter = GetComponent<MeshFilter>();
             noise = new FastNoiseLite();
             noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2S);
-            noise.SetFrequency(0.03f); // вместо noiseScale = 1
+            noise.SetFrequency(0.03f);
             noise.SetFractalType(FastNoiseLite.FractalType.FBm);
             noise.SetFractalOctaves(4);
             noise.SetFractalLacunarity(2f);
@@ -46,8 +52,7 @@ namespace Assets.scripts.WorldGenerator
 
             biomeNoise = new FastNoiseLite();
             biomeNoise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2S);
-            biomeNoise.SetFrequency(0.005f); // реже, чем terrain noise
-          
+            biomeNoise.SetFrequency(0.005f);
 
             chunkOffset = offset;
             isContainRunway = _isContainRunway;
@@ -56,37 +61,58 @@ namespace Assets.scripts.WorldGenerator
         public void SetChunkSeed(int value)
         {
             noise.SetSeed(value);
-            biomeNoise.SetSeed(value); // чтобы отличался
+            biomeNoise.SetSeed(value);
         }
-
 
         public void MakeMash()
         {
             SetHeights();
             MarchCubes();
             SetMesh();
+            //paintTerrain();
         }
 
         private void SetMesh()
         {
-            Mesh mesh = new Mesh();
-            mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+            meshFilter = GetComponent<MeshFilter>();
+            meshRenderer = GetComponent<MeshRenderer>();
+            meshCollider = GetComponent<MeshCollider>();
 
+            if (meshFilter == null)
+                meshFilter = gameObject.AddComponent<MeshFilter>();
+
+            if (meshRenderer == null)
+                meshRenderer = gameObject.AddComponent<MeshRenderer>();
+
+            if (meshCollider == null)
+                meshCollider = gameObject.AddComponent<MeshCollider>();
+
+            mesh = new Mesh();
+
+            mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
             mesh.vertices = vertices.ToArray();
             mesh.triangles = triangles.ToArray();
             mesh.RecalculateNormals();
-
             meshFilter.mesh = mesh;
+            meshCollider.sharedMesh = null;
+            meshCollider.sharedMesh = mesh;
 
-            MeshCollider collider = GetComponent<MeshCollider>();
-            if (collider == null)
-            {
-                collider = gameObject.AddComponent<MeshCollider>();
-            }
-
-            collider.sharedMesh = null;
-            collider.sharedMesh = mesh;
+            meshRenderer.material = material;
         }
+
+        //private void paintTerrain()
+        //{
+        //    GradientToTexture();
+
+        //    gradientTexture.wrapMode = TextureWrapMode.Clamp;
+
+        //    float minTerrainHeight = mesh.bounds.min.y + transform.position.y - 0.1f;
+        //    float maxTerrainHeight = mesh.bounds.max.y + transform.position.y + 0.1f;
+
+        //    material.SetTexture("_TerrainGradient", gradientTexture);
+        //    material.SetFloat("_MinTerrainHeight", minTerrainHeight);
+        //    material.SetFloat("_MaxTerrainHeight", maxTerrainHeight);
+        //}
 
         private void SetHeights()
         {
@@ -104,20 +130,15 @@ namespace Assets.scripts.WorldGenerator
 
                         float biomeValue = (biomeNoise.GetNoise(worldX, worldZ) + 1f) * 0.5f;
 
-                        float biomeHeightMultiplier = Mathf.Lerp(0.2f, 1.2f, biomeValue); // равнины → горы
-                        float biomeNoiseScale = Mathf.Lerp(0.45f, 1.4f, biomeValue);   // детальность
+                        float biomeHeightMultiplier = Mathf.Lerp(0.4f, 1.2f, biomeValue);
+                        float biomeNoiseScale = Mathf.Lerp(0.45f, 1.4f, biomeValue);
 
-                        // вычисляем с учетом масштабов
                         float nx = worldX * biomeNoiseScale;
                         float ny = worldY * biomeNoiseScale;
                         float nz = worldZ * biomeNoiseScale;
 
-                        float noiseValue = noise.GetNoise(nx, ny, nz); // 3D noise!
+                        float noiseValue = noise.GetNoise(nx, ny, nz);
                         float noiseHeight = height * biomeHeightMultiplier * ((noiseValue + 1f) * 0.5f);
-
-
-
-                        //float noiseHeight = height * ((noise.GetNoise(nx, nz) + 1f) * 0.5f);
 
                         float flatHeight = height * 0.55f;
 
@@ -125,13 +146,13 @@ namespace Assets.scripts.WorldGenerator
 
                         if (isContainRunway)
                         {
-                            if(x>0.3*width&& x < 0.7 * width&& z > 0.3 * width && z < 0.7 * width)
+                            if (x > 0.3 * width && x < 0.7 * width && z > 0.3 * width && z < 0.7 * width)
                             {
-                                heightValue=flatHeight;
+                                heightValue = flatHeight;
                             }
-                            else if(x > 0.2 * width && x < 0.8 * width && z > 0.2 * width && z < 0.8 * width)
+                            else if (x > 0.2 * width && x < 0.8 * width && z > 0.2 * width && z < 0.8 * width)
                             {
-                                heightValue = (flatHeight + noiseHeight)/2;
+                                heightValue = (flatHeight + noiseHeight) / 2;
                             }
                         }
 
@@ -151,7 +172,6 @@ namespace Assets.scripts.WorldGenerator
                 }
             }
         }
-
 
         private int GetConfigIndex(float[] cubeCorners)
         {
@@ -227,6 +247,20 @@ namespace Assets.scripts.WorldGenerator
             }
         }
 
+        private void GradientToTexture()
+        {
+            gradientTexture = new Texture2D(100, 1, TextureFormat.RGBA32, false);
+            Color[] pixelColors = new Color[100];
+
+            for (int i = 0; i < 100; i++)
+            {
+                pixelColors[i] = terrainGradient.Evaluate(i / 100f);
+            }
+
+            gradientTexture.SetPixels(pixelColors);
+            gradientTexture.Apply();
+        }
+
         private void OnDrawGizmosSelected()
         {
             if (!visualizeNoise || !Application.isPlaying)
@@ -247,7 +281,14 @@ namespace Assets.scripts.WorldGenerator
             }
         }
     }
-
-
-
 }
+
+[System.Serializable]
+class Layer
+{
+    public Texture2D texture;
+    [Range(0, 1)] public float startHeight;
+}
+
+
+

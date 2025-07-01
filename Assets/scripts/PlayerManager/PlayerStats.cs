@@ -1,6 +1,9 @@
+using HeneGames.Airplane;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
+using static HeneGames.Airplane.SimpleAirPlaneController;
 
 public class PlayerStats : MonoBehaviour
 {
@@ -11,12 +14,34 @@ public class PlayerStats : MonoBehaviour
     public Cargo currentCargo;
     public Vector3? targetPosition;
     public float reword;
+    public Vector3 homePosition;
+
+    public delegate void AirplaneChangedHandler(GameObject newPlane);
+    public static event AirplaneChangedHandler OnAirplaneChanged;
 
     private GameObject playerUi;
 
     private void Awake()
     {
         playerUi = GameObject.Find("PlayerCanvas");
+        Plane = GameObject.FindGameObjectWithTag("PlayerPlane");
+        SpawnPlaneOnRunway();
+    }
+
+    public void SpawnPlaneOnRunway()
+    {
+        GameObject runway = GameObject.Find("Home Runway");
+        if (runway == null)
+        {
+            Debug.LogError("Runway not found!");
+            return;
+        }
+
+        Plane.transform.position= runway.transform.Find("Landing final pos").transform.position;
+        var controller=Plane.GetComponent<SimpleAirPlaneController>();
+        runway.GetComponent<Runway>().AddAirplane(controller);
+        controller.AddLandingRunway(runway.GetComponent<Runway>());
+        controller.airplaneState = AirplaneState.Landing;
     }
 
     public Cargo getCurrentCargo()
@@ -33,7 +58,7 @@ public class PlayerStats : MonoBehaviour
             currentCargo = value;
             targetPosition= currentCargo.getTarget().getPosition().position;
             reword = currentCargo.getReword();
-            playerUi.GetComponent<WaypointMarker>().setTarget(currentCargo.getTarget().getPosition());
+            playerUi.transform.Find("WaipointToCargo").GetComponent<WaypointMarker>().setTarget(currentCargo.getTarget().getPosition());
             return $" Cargo set! Target: Station ¹{currentCargo.getTarget().getId()}, Reward: {currentCargo.getReword()}";
         }
         else
@@ -58,7 +83,7 @@ public class PlayerStats : MonoBehaviour
         currentCargo = null;
         targetPosition = null;
         reword = 0;
-        playerUi.GetComponent<WaypointMarker>().setTarget(null);
+        playerUi.transform.Find("WaipointToCargo").GetComponent<WaypointMarker>().setTarget(null);
     }
 
     public void addMoney(float value)
@@ -69,6 +94,16 @@ public class PlayerStats : MonoBehaviour
             value = 0;
         }
         Debug.Log(money);
+    }
+
+    public void setMoney(float value)
+    {
+        money = value;
+    }
+
+    public float getMoney()
+    {
+        return money;
     }
 
     public string tryUnloadPlane(Transform station)
@@ -91,7 +126,23 @@ public class PlayerStats : MonoBehaviour
 
     }
 
-  
+    public void ChangePlane(GameObject _newPlane)
+    {
+        GameObject newPlane = Instantiate(_newPlane, Plane.transform.position, Plane.transform.rotation);
+        //newPlane.transform.parent = Plane.transform.parent;
+
+        newPlane.tag = "PlayerPlane"; 
+
+        var controller = newPlane.GetComponent<SimpleAirPlaneController>();
+        Plane.GetComponent<SimpleAirPlaneController>().GetCurrentRunway().AddAirplane(controller);
+        controller.AddLandingRunway(Plane.GetComponent<SimpleAirPlaneController>().GetCurrentRunway());
+        controller.airplaneState = AirplaneState.Landing;
+
+        Destroy(Plane);         
+        Plane = newPlane;     
+
+        OnAirplaneChanged?.Invoke(newPlane); 
+    }
 
 
 }

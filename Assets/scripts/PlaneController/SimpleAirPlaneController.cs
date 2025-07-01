@@ -61,6 +61,8 @@ namespace HeneGames.Airplane
         private bool isAIPlane = false;
         [SerializeField]
         private Vector3 target;
+        [SerializeField]
+        private bool stabilisation;
 
         [Header("Particles")]
         [SerializeField] private List<GameObject> engineHeatEffects;
@@ -170,13 +172,16 @@ namespace HeneGames.Airplane
         [Header("Gun")]
         [SerializeField] private Transform firePoint;
         [SerializeField] private float bulletDamage = 1f;
-        [SerializeField] private float fireDistance = 100f;        // максимальная дистанция огня
+        [SerializeField] private float fireDistance = 1300f;        // максимальная дистанция огня
         [SerializeField] private float fireAngleThreshold = 5f;    // точность наведения перед выстрелом
-        [SerializeField] private float bulletSpeed = 100f;         // скорость пули
-        [SerializeField] private float fireCooldown = 0.1f;       // перезарядка
+        [SerializeField] private float bulletSpeed = 10f;         // скорость пули
+        [SerializeField] private float fireCooldown = 0.02f;       // перезарядка
         [SerializeField] private float lastFireTime = -999f;
         [SerializeField] private float spreadAngle = 2f; // Максимальный разброс в градусах
         [SerializeField] private float maxAimAngle = 15f; // Максимальный угол, при котором разрешено стрелять, но с разбросом
+        [SerializeField] private float bulletRadius = 0.5f;
+        [SerializeField] private LayerMask shootMask;
+        [SerializeField] private float dynamicAngleFactor = 3f;
 
         private float turboSpeed;
 
@@ -222,7 +227,7 @@ namespace HeneGames.Airplane
         private void FlyingUpdate()
         {
             UpdatePropellersAndLights();
-
+            recalculateDebafs();
             //Airplane move only if not dead
             if (!planeIsDead)
             {
@@ -238,7 +243,12 @@ namespace HeneGames.Airplane
             if (!planeIsDead && HitSometing())
             {
                 Crash();
-                Debug.Log("умер");
+                Explouse();
+            }
+
+            else if (planeIsDead && HitSometing())
+            {
+                Explouse();
             }
         }
 
@@ -387,6 +397,22 @@ namespace HeneGames.Airplane
                 //Audio
                 currentEngineSoundPitch = defaultSoundPitch;
             }
+
+            if (stabilisation)
+            {
+                Vector3 localEuler = transform.localEulerAngles;
+
+                // Преобразование в диапазон -180..180
+                localEuler.x = (localEuler.x > 180) ? localEuler.x - 360 : localEuler.x;
+                localEuler.z = (localEuler.z > 180) ? localEuler.z - 360 : localEuler.z;
+
+                float autoLevelStrength = 0.5f;
+
+                float pitchCorrection = -localEuler.x * autoLevelStrength * Time.deltaTime;
+                float rollCorrection = -localEuler.z * autoLevelStrength * Time.deltaTime;
+
+                transform.Rotate(pitchCorrection, 0f, rollCorrection, Space.Self);
+            }
         }
 
         #endregion
@@ -430,7 +456,7 @@ namespace HeneGames.Airplane
             }
 
             //Accelerate
-            if (currentSpeed < turboSpeed)
+            if (currentSpeed < defaultSpeed)
             {
                 currentSpeed += (accelerating * 2f) * Time.deltaTime;
             }
@@ -504,7 +530,6 @@ namespace HeneGames.Airplane
 
         private void RestartPlane()
         {
-            //health = 10;
             gameObject.GetComponent<PlaneStats>().ResetHealth();
             turboOverheat = false;
             turboHeat = 0;
@@ -635,11 +660,21 @@ namespace HeneGames.Airplane
             return false;
         }
 
+        private void Explouse()
+        {
+            Debug.Log("Bummm");
+        }
+
+
         private void recalculateDebafs()
         {
             float health = gameObject.GetComponent<PlaneStats>().getHealth();
             float maxHealth = gameObject.GetComponent<PlaneStats>().getMaxHealth();
             debafs = 1-(health / maxHealth);
+            if (health == 0)
+            {
+                Crash();
+            }
         }
 
         #endregion
@@ -649,6 +684,16 @@ namespace HeneGames.Airplane
         public float getPitch()
         {
             return inputV;
+        }
+
+        public bool GetStabilisation()
+        {
+            return stabilisation;
+        }
+
+        public Runway GetCurrentRunway()
+        {
+            return currentRunway;
         }
 
         public float getRoll()
@@ -776,11 +821,21 @@ namespace HeneGames.Airplane
 
         private float trustChangeSpeed = 0.3f;
 
-        protected virtual float GetInputHorizontal() => Input.GetAxis("Horizontal");
-        protected virtual float GetInputVertical() => Input.GetAxis("Vertical");
+        protected virtual float GetInputHorizontal() => Input.GetAxisRaw("Horizontal");
+        protected virtual float GetInputVertical() => Input.GetAxisRaw("Vertical");
         protected virtual bool GetInputTurbo() => Input.GetButton("Turbo");
         protected virtual bool GetInputYawLeft() => Input.GetButton("YawLeft");
         protected virtual bool GetInputYawRight() => Input.GetButton("YawRight");
+
+        private void HandleInputStabilisation()
+        {
+            if (Input.GetKeyDown(KeyCode.G))
+            {
+                stabilisation = !stabilisation;
+                Debug.Log("Stabilisation toggled: " + stabilisation);
+            }
+        }
+
         protected virtual float GetTrustDelta()
         {
             float delta = 0f;
@@ -789,7 +844,7 @@ namespace HeneGames.Airplane
             return delta;
         }
 
-        float minDistanceForSlowdown = 5f;
+        float minDistanceForSlowdown = 1f;
         float controlAngleThreshold = 0.001f;
 
         private void HandleInputs()
@@ -801,9 +856,9 @@ namespace HeneGames.Airplane
                 inputYawLeft = GetInputYawLeft();
                 inputYawRight = GetInputYawRight();
                 inputTurbo = GetInputTurbo();
-
                 trustProcent += GetTrustDelta();
                 trustProcent = Mathf.Clamp(trustProcent, 0.2f, 1f);
+                HandleInputStabilisation();
             }
             else
             {
@@ -816,7 +871,7 @@ namespace HeneGames.Airplane
 
         #region Ai
 
-        LayerMask obstacleMask = ~0;
+        [SerializeField] LayerMask obstacleMask = ~0;
         float detectDistance = 100f; 
 
         private void AiHandler()
@@ -925,44 +980,50 @@ namespace HeneGames.Airplane
 
         public void Fire()
         {
+            // 1) Быстрая проверка: перезарядка и цель
             if (Time.time - lastFireTime < fireCooldown || target == null)
                 return;
 
+            // 2) Направление на цель
             Vector3 toTarget = (target - firePoint.position).normalized;
 
+            // 3) Простой угол‑фильтр (можно убрать, если нужен всегда Raycast)
             float angle = Vector3.Angle(firePoint.forward, toTarget);
             if (angle > maxAimAngle)
-                return; // Слишком далеко от цели
+                return;
 
-            // Применяем разброс
-            Vector3 spreadDirection = ApplySpread(toTarget, spreadAngle);
+            // 4) Разброс пули
+            Vector3 spreadDir = ApplySpread(toTarget, spreadAngle);
 
-            if (Physics.Raycast(firePoint.position, spreadDirection, out RaycastHit hit, fireDistance))
+            // 5) Отладочный луч на всю длину fireDistance
+            Debug.DrawRay(firePoint.position, spreadDir * fireDistance, Color.yellow, 0.5f);
+
+            // 6) Собственно выстрел по слоям shootMask
+            if (Physics.Raycast(
+                    firePoint.position,
+                    spreadDir,
+                    out RaycastHit hit,
+                    fireDistance,
+                    shootMask
+                ))
             {
-                var hitCol = hit.collider;
-                if(hitCol != null) 
-                {
-                    try
-                    {
-                        hit.collider.transform.parent.transform.parent.transform.parent.transform.gameObject.GetComponent<PlaneStats>().TakeDamage(bulletDamage);
-                    }
-                    catch (NullReferenceException)
-                    {
-                        Debug.Log("");
-                    }
-                }
+                // Попадание
+                var stats = hit.collider.GetComponentInParent<PlaneStats>();
+                if (stats != null)
+                    stats.TakeDamage(bulletDamage);
 
                 StartCoroutine(ShowBulletTrail(firePoint.position, hit.point));
             }
             else
             {
-                // Визуализировать промах в воздух
-                Vector3 endPoint = firePoint.position + spreadDirection * fireDistance;
-                StartCoroutine(ShowBulletTrail(firePoint.position, endPoint));
+                // Промах – рисуем трейл на всю дистанцию
+                Vector3 missPoint = firePoint.position + spreadDir * fireDistance;
+                StartCoroutine(ShowBulletTrail(firePoint.position, missPoint));
             }
 
             lastFireTime = Time.time;
         }
+
 
         private Vector3 ApplySpread(Vector3 direction, float maxSpreadAngle)
         {
@@ -980,15 +1041,15 @@ namespace HeneGames.Airplane
             GameObject lineObj = new GameObject("BulletTrail");
             LineRenderer lr = lineObj.AddComponent<LineRenderer>();
 
-            lr.startWidth = 0.05f;
-            lr.endWidth = 0.05f;
+            lr.startWidth = 0.2f;
+            lr.endWidth = 0.2f;
             lr.material = new Material(Shader.Find("Unlit/Color"));
             lr.material.color = Color.yellow;
 
             lr.SetPosition(0, start);
             lr.SetPosition(1, end);
 
-            yield return new WaitForSeconds(0.05f); 
+            yield return new WaitForSeconds(0.3f); 
 
             Destroy(lineObj);
         }

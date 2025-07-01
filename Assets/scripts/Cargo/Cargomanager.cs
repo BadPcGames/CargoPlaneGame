@@ -17,7 +17,7 @@ public class Cargomanager : MonoBehaviour
         List<GameObject> stationsForDelivery=new List<GameObject>();
         foreach(GameObject station in stations)
         {
-            if (station.GetComponent<Station>().getId() != currentStationId)
+            if (station.GetComponent<StationStats>().getId() != currentStationId)
             {
                 stationsForDelivery.Add(station);
             }
@@ -29,7 +29,7 @@ public class Cargomanager : MonoBehaviour
 
         for (int i = 0; i < count; i++)
         {
-            float randomSpace = Random.Range(50, 300);
+            float randomSpace = Random.Range(15, 300);
             cargoList.Add(new Cargo(stationsForDelivery[Random.Range(0, stationsForDelivery.Count())],
                                                         randomSpace,
                                                         currentStation));

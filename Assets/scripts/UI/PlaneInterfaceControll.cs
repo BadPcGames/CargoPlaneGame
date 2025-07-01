@@ -13,6 +13,7 @@ public class PlaneInterfaceControll : MonoBehaviour
     public GameObject BrokenMap;
     public GameObject Heat;
     public GameObject DangerLight;
+    public GameObject StabLight;
 
     private Vector3 StartSize;
     private Vector3 currentScale;
@@ -30,9 +31,9 @@ public class PlaneInterfaceControll : MonoBehaviour
 
     private void Awake()
     {
-        controller = GameObject.FindGameObjectWithTag("PlayerPlane").GetComponent<SimpleAirPlaneController>();
+        Plane = GameObject.FindGameObjectWithTag("PlayerPlane");
+        controller = Plane.GetComponent<SimpleAirPlaneController>();
     }
-
 
     private void FixedUpdate()
     {
@@ -46,8 +47,26 @@ public class PlaneInterfaceControll : MonoBehaviour
             TrustManager();
             HieghtManager();
             HeatManager();
+            StabilisationManager();
         }
     }
+
+    private void OnEnable()
+    {
+        PlayerStats.OnAirplaneChanged += UpdateTarget;
+    }
+
+    private void OnDisable()
+    {
+        PlayerStats.OnAirplaneChanged -= UpdateTarget;
+    }
+
+    private void UpdateTarget(GameObject newPlane)
+    {
+        Plane = newPlane;
+        controller=Plane.GetComponent<SimpleAirPlaneController>();
+    }
+
 
     private void HeatManager()
     {
@@ -63,10 +82,26 @@ public class PlaneInterfaceControll : MonoBehaviour
         Heat.transform.rotation = Quaternion.Euler(0, 0,(-260*heat)+ 130);
     }
 
+
+    private void StabilisationManager()
+    {
+        if (controller.GetStabilisation())
+        {
+            StabLight.GetComponent<Image>().color = new Color32(198, 255, 71, 255);
+        }
+        else
+        {
+            StabLight.GetComponent<Image>().color = new Color32(58, 58, 58, 255);
+        }
+    }
+
     private void HieghtManager()
     {
-        float hieght = Plane.transform.position.y;
-        Hieght.GetComponent<Text>().text = hieght.ToString();
+        if (Plane != null)
+        {
+            float hieght = Plane.transform.position.y;
+            Hieght.GetComponent<Text>().text = hieght.ToString();
+        }
     }
 
     private void TrustManager()

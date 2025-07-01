@@ -4,24 +4,51 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Assets.scripts.PlaneController
 {
     public class PlaneStats:MonoBehaviour
     {
+        [SerializeField] private string Name;
+        [SerializeField] private int PlaneId;
+        [SerializeField] private Sprite PlaneImage;
         [SerializeField] private float MaxHealth;
         [SerializeField] private float CargoSpace;
+        [SerializeField] private string Descrition;
+        [SerializeField] private float Price;
+        [SerializeField] private bool Bought;
 
-        private float health;
+        public float health;
 
         private void Awake()
         {
             health=MaxHealth;
         }
 
+        public void setBought(bool value)
+        {
+            Bought=value;
+        }
+
         public void ResetHealth()
         {
             health = MaxHealth;
+        }
+
+        public string getName()
+        {
+            return Name;
+        }
+
+        public Sprite getPlaneImage()
+        {
+            return PlaneImage;
+        }
+
+        public int getPlaneId()
+        {
+            return PlaneId;
         }
 
         public void TakeDamage(float value)
@@ -34,6 +61,11 @@ namespace Assets.scripts.PlaneController
             {
                 health-=value;
             }
+        }
+
+        public string getDescription()
+        {
+            return Descrition;
         }
 
         public float getHealth()
@@ -55,6 +87,12 @@ namespace Assets.scripts.PlaneController
             return CargoSpace;
         }
 
+        public float getPrice() { return Price; }
+
+        public bool getBought()
+        {
+            return Bought;
+        }
 
     }
 }

@@ -3,9 +3,9 @@ using UnityEngine;
 
 public class Cargo
 { 
-    private Station target;
+    private StationStats target;
     private float requiredSpace;
-    private Station stationCurrent;
+    private StationStats stationCurrent;
     private string name;
     private float valueKoficient;
     private float distance;
@@ -28,7 +28,7 @@ public class Cargo
         return name;
     }
 
-    public Station getTarget()
+    public StationStats getTarget()
     {
         return target;
     }
@@ -46,9 +46,9 @@ public class Cargo
         int indexOfCargo = Random.RandomRange(0, cargoNamesList.CargoNames.Count);
         name = cargoNamesList.CargoNames[indexOfCargo].Name;
         valueKoficient = cargoNamesList.CargoNames[indexOfCargo].ValueKof;
-        target = t.GetComponent<Station>();
+        target = t.GetComponent<StationStats>();
         requiredSpace = r;
-        stationCurrent = c.GetComponent<Station>();
+        stationCurrent = c.GetComponent<StationStats>();
 
         distance = Vector3.Distance
             (c.transform.position, t.transform.position);

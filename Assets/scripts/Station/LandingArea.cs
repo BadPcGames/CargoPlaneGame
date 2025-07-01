@@ -31,5 +31,16 @@ namespace HeneGames.Airplane
                 }
             }
         }
+
+        //public void SetPlaneIntoRunway(GameObject plane)
+        //{
+        //    SimpleAirPlaneController _controller = plane.GetComponent<SimpleAirPlaneController>();
+
+        //    runway.landingAdjuster.position = _controller.transform.position;
+
+        //    runway.AddAirplane(_controller);
+        //    _controller.airplaneState = AirplaneState.Landing;
+        //    _controller.AddLandingRunway(runway);
+        //}
     }
 }

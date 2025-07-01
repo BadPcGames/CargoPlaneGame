@@ -28,13 +28,10 @@ namespace HeneGames.Airplane
 
         private void Update()
         {
-            //Airplane is landing (Landing area add airplane controller reference)
             if(landingAirplaneController != null)
             {
-                //Set airplane to landing adjuster child
                 landingAirplaneController.transform.SetParent(landingAdjuster.transform);
 
-                //Move landing adjuster to landing final pos position
                 if(!landingCompleted)
                 {
                     landingSpeed += Time.deltaTime;
@@ -50,7 +47,6 @@ namespace HeneGames.Airplane
                 {
                     landingAdjuster.localPosition = Vector3.Lerp(landingAdjuster.localPosition, landingfinalPos.localPosition, landingSpeed * Time.deltaTime);
 
-                    //Reset runway if landing airplane is taking off
                     if (landingAirplaneController.airplaneState == SimpleAirPlaneController.AirplaneState.Flying)
                     {
                         landingAirplaneController.transform.SetParent(null);
@@ -71,7 +67,6 @@ namespace HeneGames.Airplane
             }
         }
 
-        //Landing area add airplane controller reference
         public void AddAirplane(SimpleAirPlaneController _simpleAirPlane)
         {
             landingAirplaneController = _simpleAirPlane;

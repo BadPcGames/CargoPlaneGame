@@ -15,11 +15,11 @@ namespace HeneGames.Airplane
         [SerializeField] private GameObject uiContent;
         [SerializeField] private GameObject player;
 
-        [SerializeField] private GameObject cargoCardPrefab; 
-        [SerializeField] private Transform cargoListContent; 
+        [SerializeField] private GameObject cargoCardPrefab;
+        [SerializeField] private Transform cargoListContent;
 
         private GameObject planeUi;
-        private Station station;
+        private StationStats station;
 
 
         private bool cargoGenerated = false;
@@ -28,19 +28,34 @@ namespace HeneGames.Airplane
         private void Awake()
         {
             player = GameObject.Find("player");
-            station = gameObject.GetComponent<Station>();
+            station = gameObject.GetComponent<StationStats>();
             uiContent.SetActive(false);
             planeUi = GameObject.Find("PlaneControllCanvas");
         }
 
+        private void OnEnable()
+        {
+            PlayerStats.OnAirplaneChanged += UpdateTarget;
+        }
+
+        private void OnDisable()
+        {
+            PlayerStats.OnAirplaneChanged -= UpdateTarget;
+        }
+
+        private void UpdateTarget(GameObject newPlane)
+        {
+            planeUi = newPlane.transform.Find("PlaneControllCanvas").gameObject;
+        }
+
         public void OnLoadCargoButton(int index)
         {
-             player.GetComponent<Cargomanager>().chooseCargo(index);
+            player.GetComponent<Cargomanager>().chooseCargo(index);
         }
 
         public void OnUnloadCargoButton()
         {
-           debugText.text= player.GetComponent<PlayerStats>().tryUnloadPlane(station.transform);
+            debugText.text = player.GetComponent<PlayerStats>().tryUnloadPlane(station.transform);
         }
 
         private void Update()
@@ -56,7 +71,7 @@ namespace HeneGames.Airplane
                 if (!cargoGenerated)
                 {
                     player.GetComponent<Cargomanager>().GanarateCargo(40, station.getId());
-                    GenerateCargoCards(); 
+                    GenerateCargoCards();
                     cargoGenerated = true;
                 }
             }
@@ -98,8 +113,8 @@ namespace HeneGames.Airplane
 
             for (int i = 0; i < cargoList.Count; i++)
             {
-                int index = i; 
-                //поиск текстовых полей интерфейса
+                int index = i;
+
                 GameObject card = Instantiate(cargoCardPrefab, cargoListContent);
                 Text descriptionText = card.transform.Find("Description").GetComponent<Text>();
                 Text priceText = card.transform.Find("Price").GetComponent<Text>();
@@ -107,7 +122,6 @@ namespace HeneGames.Airplane
                 Text nameText = card.transform.Find("CargoName").GetComponent<Text>();
                 Button acceptButton = card.transform.Find("AcceptButton").GetComponent<Button>();
 
-                //заполнения интерфейса
                 nameText.text = $"{cargoList[i].getName()}";
                 descriptionText.text = $"Доставь груз {cargoList[i].getName()}, требующий {cargoList[i].getRequiredSpace()} пространства, к станции: {cargoList[i].getTarget().getId()}";
                 priceText.text = $"Награда: {cargoList[i].getReword()}";
@@ -116,9 +130,9 @@ namespace HeneGames.Airplane
                 bool canGetCargo = player.GetComponent<PlayerStats>().Plane.GetComponent<PlaneStats>().getCargoSpace() > cargoList[i].getRequiredSpace();
                 if (!canGetCargo)
                 {
-                    descriptionText.text = descriptionText.text + "\n Груз слишком большой для вашего самолёта";
-                    acceptButton.enabled =canGetCargo;
+                    descriptionText.text = descriptionText.text + "\n Груз слишком большой для вашего самолёта"; 
                 }
+                acceptButton.interactable = canGetCargo;
 
                 acceptButton.onClick.AddListener(() => OnLoadCargoButton(index));
             }

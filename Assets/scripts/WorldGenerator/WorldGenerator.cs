@@ -101,7 +101,7 @@ namespace Assets.scripts.WorldGenerator
             GameObject station = Instantiate(StaionPrefab, stationPosition, Quaternion.identity);
             station.transform.SetParent(transform);
 
-            station.GetComponent<Station>().setId(Stations.Count);
+            station.GetComponent<StationStats>().setId(Stations.Count);
             
         }
 

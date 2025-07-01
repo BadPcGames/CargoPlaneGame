@@ -7,14 +7,16 @@ TagManager:
   - Station
   - PlayerPlane
   - Bullet
+  - Base
+  - Ground
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Plane
   - Water
   - UI
-  - 
+  - Obstacles
   - 
   - 
   - 

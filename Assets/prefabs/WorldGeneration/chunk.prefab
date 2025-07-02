@@ -103,7 +103,7 @@ MonoBehaviour:
   width: 30
   height: 20
   resolution: 2
-  noiseScale: 1.5
+  noiseScale: 1.74
   heightTresshold: 0.5
   visualizeNoise: 0
   use3DNoise: 0

@@ -19,28 +19,20 @@ namespace Assets.scripts.WorldGenerator
         [SerializeField] private bool manualSeed;
 
         [SerializeField] private GameObject StaionPrefab;
+        [SerializeField] private GameObject HomeRunwayPrefab;
         [SerializeField] private int numberOfStations = 10;
         [SerializeField] private float stationHeight = 117f;
         [SerializeField] private float stationMinDistance = 5f;
 
 
         private Dictionary<Vector2Int, int> Stations = new Dictionary<Vector2Int, int>(); 
-
         private Vector2Int camChunk = new Vector2Int();
         private IEnumerator coroutine;
 
-        public void setSeed(string value)
-        {
-            mainSeed = int.Parse(value);
-        }
-
-        public void setIsManualSeed(bool value)
-        {
-            manualSeed = value;
-        }
-
         private void Start()
         {
+            Cam = GameObject.FindGameObjectWithTag("MainCamera");
+            Debug.Log(Cam);
             if (!manualSeed)
             {
                 mainSeed = System.DateTime.Now.Millisecond;
@@ -58,15 +50,25 @@ namespace Assets.scripts.WorldGenerator
                 }
             }
         }
+        
+        public void setSeed(string value)
+        {
+            mainSeed = int.Parse(value);
+        }
+
+        public void setIsManualSeed(bool value)
+        {
+            manualSeed = value;
+        }
 
         private void GenerateStationChunkPositions()
         {
             Stations.Clear();
             int id = 0;
             Stations.Add(new Vector2Int(0,0), id);
-            AddStation(0,new Vector3(0,0,0));
+            AddStation(HomeRunwayPrefab,new Vector3(0,0,0));
             id++;
-            while (Stations.Count < numberOfStations-1)
+            while (Stations.Count < numberOfStations - 1)
             {
                 Vector2Int candidate = new Vector2Int(
                     Random.Range(-100, 100),
@@ -86,7 +88,7 @@ namespace Assets.scripts.WorldGenerator
                 if (isFarEnough)
                 {
                     Stations.Add(candidate, id);
-                    AddStation(id, new Vector3(candidate.x, 0, candidate.y));
+                    AddStation(StaionPrefab, new Vector3(candidate.x, 0, candidate.y));
                     Debug.Log(candidate);
                     id++;
                 }
@@ -94,15 +96,15 @@ namespace Assets.scripts.WorldGenerator
         }
 
 
-        private void AddStation(int id,Vector3 pos)
+        private void AddStation(GameObject staionPrefab, Vector3 pos)
         {
-
             Vector3 stationPosition = pos*sizeChunk + new Vector3(sizeChunk * 0.5f, stationHeight, sizeChunk * 0.5f);
-            GameObject station = Instantiate(StaionPrefab, stationPosition, Quaternion.identity);
+            GameObject station = Instantiate(staionPrefab, stationPosition, Quaternion.identity);
             station.transform.SetParent(transform);
-
-            station.GetComponent<StationStats>().setId(Stations.Count);
-            
+            if (station.GetComponent<StationStats>() != null)
+            {
+                station.GetComponent<StationStats>().setId(Stations.Count);
+            }
         }
 
 

@@ -140,7 +140,7 @@ namespace Assets.scripts.WorldGenerator
                         float noiseValue = noise.GetNoise(nx, ny, nz);
                         float noiseHeight = height * biomeHeightMultiplier * ((noiseValue + 1f) * 0.5f);
 
-                        float flatHeight = height * 0.55f;
+                        float flatHeight = height * 0.4f;
 
                         float heightValue = noiseHeight;
 

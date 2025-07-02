@@ -1,0 +1,58 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2293523486210160347
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2507683515456223199}
+  - component: {fileID: 5039374338388649610}
+  m_Layer: 0
+  m_Name: world
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2507683515456223199
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2293523486210160347}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 47, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5039374338388649610
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2293523486210160347}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff43203786d78a54283143f5f2e19bd5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ChunkPrefabs: {fileID: 6876668883984660729, guid: a389d3b49e009a343b55b6598637e200, type: 3}
+  Cam: {fileID: 0}
+  range: 4
+  sizeChunk: 1800
+  chunkScale: 60
+  mainSeed: 2
+  manualSeed: 1
+  StaionPrefab: {fileID: 6098815465217706862, guid: 48e73f53abcb6e448bc03ba261d725cf, type: 3}
+  HomeRunwayPrefab: {fileID: 6098815465217706862, guid: d4dc779854fa0fb48a022b9b47d0ee18, type: 3}
+  numberOfStations: 10
+  stationHeight: 512
+  stationMinDistance: 5

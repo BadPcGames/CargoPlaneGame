@@ -26,6 +26,8 @@ public class PlayerStats : MonoBehaviour
         playerUi = GameObject.Find("PlayerCanvas");
         Plane = GameObject.FindGameObjectWithTag("PlayerPlane");
         SpawnPlaneOnRunway();
+        playerUi.GetComponent<PlayerUi>().setMoney(money);
+        playerUi.GetComponent<PlayerUi>().setHaveCargo(false);
     }
 
     public void SpawnPlaneOnRunway()
@@ -33,7 +35,7 @@ public class PlayerStats : MonoBehaviour
         GameObject runway = GameObject.Find("Home Runway");
         if (runway == null)
         {
-            Debug.LogError("Runway not found!");
+            Debug.Log("Runway not found!");
             return;
         }
 
@@ -59,12 +61,15 @@ public class PlayerStats : MonoBehaviour
             targetPosition= currentCargo.getTarget().getPosition().position;
             reword = currentCargo.getReword();
             playerUi.transform.Find("WaipointToCargo").GetComponent<WaypointMarker>().setTarget(currentCargo.getTarget().getPosition());
+            playerUi.GetComponent<PlayerUi>().setHaveCargo(true);
             return $" Cargo set! Target: Station ¹{currentCargo.getTarget().getId()}, Reward: {currentCargo.getReword()}";
+            
         }
         else
         {
            return "You alredy have cargo";
         }
+   
     }
 
     public string LoadCargoToPlane(Cargo c)
@@ -79,26 +84,21 @@ public class PlayerStats : MonoBehaviour
 
     public void deliveredCargo()
     {
-        addMoney((float)reword);
+        setMoney((float)reword+money);
         currentCargo = null;
         targetPosition = null;
         reword = 0;
         playerUi.transform.Find("WaipointToCargo").GetComponent<WaypointMarker>().setTarget(null);
     }
 
-    public void addMoney(float value)
+    public void setMoney(float value)
     {
-        money+= value;
+        money = value;
         if (value < 0)
         {
             value = 0;
         }
-        Debug.Log(money);
-    }
-
-    public void setMoney(float value)
-    {
-        money = value;
+        playerUi.GetComponent<PlayerUi>().setMoney(money);
     }
 
     public float getMoney()
@@ -114,6 +114,7 @@ public class PlayerStats : MonoBehaviour
             if(Vector3.Distance(Plane.transform.position, (Vector3)targetPosition) < 10)
             {
                 deliveredCargo();
+                playerUi.GetComponent<PlayerUi>().setHaveCargo(false);
                 return "Cargo Unload";
             }
             else

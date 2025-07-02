@@ -21,6 +21,9 @@ namespace Assets.scripts.PlaneController
 
         public float health;
 
+        public delegate void AirplaneTakeChangeHealth(float health);
+        public static event AirplaneTakeChangeHealth OnAirplaneChangedHealth;
+
         private void Awake()
         {
             health=MaxHealth;
@@ -34,6 +37,7 @@ namespace Assets.scripts.PlaneController
         public void ResetHealth()
         {
             health = MaxHealth;
+            OnAirplaneChangedHealth.Invoke((100f * health) / MaxHealth);
         }
 
         public string getName()
@@ -61,6 +65,7 @@ namespace Assets.scripts.PlaneController
             {
                 health-=value;
             }
+            OnAirplaneChangedHealth.Invoke((100f * health) / MaxHealth);
         }
 
         public string getDescription()

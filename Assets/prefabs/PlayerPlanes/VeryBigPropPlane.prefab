@@ -588,6 +588,7 @@ MonoBehaviour:
   airplaneState: 0
   isAIPlane: 0
   target: {x: 0, y: 0, z: 0}
+  stabilisation: 0
   engineHeatEffects: []
   trailThickness: 0.221
   wingTrailEffects:
@@ -716,6 +717,7 @@ MonoBehaviour:
   Descrition: default cargo plane
   Price: 10000
   Bought: 0
+  health: 0
 --- !u!1 &6330720459147056592
 GameObject:
   m_ObjectHideFlags: 0
@@ -1280,6 +1282,18 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 2914295403386069633, guid: 8e136be7fbd79d84da74ef5ca7e486cc, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: -3366125094329678095, guid: 0bb6705a95864bd459bb7f1726a00f62, type: 3}
+    - target: {fileID: 3750354427962724856, guid: 8e136be7fbd79d84da74ef5ca7e486cc, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: -3366125094329678095, guid: 0bb6705a95864bd459bb7f1726a00f62, type: 3}
+    - target: {fileID: 5401241115198467468, guid: 8e136be7fbd79d84da74ef5ca7e486cc, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: -3366125094329678095, guid: 0bb6705a95864bd459bb7f1726a00f62, type: 3}
     - target: {fileID: 6468630958693420586, guid: 8e136be7fbd79d84da74ef5ca7e486cc, type: 3}
       propertyPath: m_Layer
       value: 3
@@ -1292,6 +1306,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 7287170184362285877, guid: 8e136be7fbd79d84da74ef5ca7e486cc, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: -3366125094329678095, guid: 0bb6705a95864bd459bb7f1726a00f62, type: 3}
     - target: {fileID: 7501601064704819074, guid: 8e136be7fbd79d84da74ef5ca7e486cc, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

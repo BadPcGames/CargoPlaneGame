@@ -45,6 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ChunkPrefabs: {fileID: 6876668883984660729, guid: a389d3b49e009a343b55b6598637e200, type: 3}
+  WatterPrefab: {fileID: 515801041543850474, guid: f9c7f09f022be07438ff5b3f9b564b9d, type: 3}
   Cam: {fileID: 0}
   range: 4
   sizeChunk: 1800

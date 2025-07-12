@@ -39,7 +39,7 @@ public class PlayerUi : MonoBehaviour
 
     private void HomeWaipointManager()
     {
-        if (Input.GetKeyDown(KeyCode.B))
+        if (Input.GetKeyDown(KeyCode.H))
         {
             if (transform.Find("WaipointToBase").GetComponent<WaypointMarker>().target == null)
             {

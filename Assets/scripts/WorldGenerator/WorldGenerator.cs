@@ -9,6 +9,7 @@ namespace Assets.scripts.WorldGenerator
     public class WorldGenerator : MonoBehaviour
     {
         [SerializeField] private GameObject ChunkPrefabs;
+        [SerializeField] private GameObject WatterPrefab;
         [SerializeField] private GameObject Cam;
         [SerializeField] private int range = 1;
 
@@ -29,9 +30,13 @@ namespace Assets.scripts.WorldGenerator
         private Vector2Int camChunk = new Vector2Int();
         private IEnumerator coroutine;
 
-        private void Start()
+        private void Awake()
         {
             Cam = GameObject.FindGameObjectWithTag("MainCamera");
+        }
+
+        private void Start()
+        {
             Debug.Log(Cam);
             if (!manualSeed)
             {
@@ -143,6 +148,7 @@ namespace Assets.scripts.WorldGenerator
  
                 coroutine = addChunks(changeByX, changeByZ, true);
                 StartCoroutine(coroutine);
+                WatterPrefab.transform.position = new Vector3(camChunk.x*sizeChunk, transform.position.y, camChunk.y * sizeChunk);
             }
         }
 

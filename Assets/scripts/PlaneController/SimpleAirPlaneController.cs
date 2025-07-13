@@ -43,12 +43,12 @@ namespace HeneGames.Airplane
         private Runway currentRunway;
 
         //Input variables
-        private float inputH;
-        private float inputV;
-        private bool inputTurbo;
-        private bool inputYawLeft;
-        private bool inputYawRight;
-        private float trustProcent=0.8f;
+        protected float inputH;
+        protected float inputV;
+        protected bool inputTurbo;
+        protected bool inputYawLeft;
+        protected bool inputYawRight;
+        protected float trustProcent=0.8f;
 
         private GameObject PlaneUi;
 
@@ -58,9 +58,9 @@ namespace HeneGames.Airplane
 
         [Header("Control Mode")]
         [SerializeField]
-        private bool isAIPlane = false;
+        protected bool isAIPlane = false;
         [SerializeField]
-        private Vector3 target;
+        protected Vector3 target;
         [SerializeField]
         private bool stabilisation;
 
@@ -169,23 +169,11 @@ namespace HeneGames.Airplane
         [SerializeField] private AudioClip danger;
         [SerializeField] private AudioClip explouse;
 
-        [Header("Gun")]
-        [SerializeField] private Transform firePoint;
-        [SerializeField] private float bulletDamage = 1f;
-        [SerializeField] private float fireDistance = 1300f;        // максимальная дистанция огня
-        [SerializeField] private float fireAngleThreshold = 5f;    // точность наведения перед выстрелом
-        [SerializeField] private float bulletSpeed = 10f;         // скорость пули
-        [SerializeField] private float fireCooldown = 0.02f;       // перезарядка
-        [SerializeField] private float lastFireTime = -999f;
-        [SerializeField] private float spreadAngle = 2f; // Максимальный разброс в градусах
-        [SerializeField] private float maxAimAngle = 15f; // Максимальный угол, при котором разрешено стрелять, но с разбросом
-        [SerializeField] private float bulletRadius = 0.5f;
-        [SerializeField] private LayerMask shootMask;
-        [SerializeField] private float dynamicAngleFactor = 3f;
+     
 
         private float turboSpeed;
 
-        private void Start()
+        protected virtual void Start()
         {
             //Setup speeds
             maxSpeed = defaultSpeed;
@@ -458,7 +446,7 @@ namespace HeneGames.Airplane
             //Accelerate
             if (currentSpeed < defaultSpeed)
             {
-                currentSpeed += (accelerating * 2f) * Time.deltaTime;
+                currentSpeed += (accelerating * 4f) * Time.deltaTime;
             }
 
             //Move forward
@@ -844,10 +832,10 @@ namespace HeneGames.Airplane
             return delta;
         }
 
-        float minDistanceForSlowdown = 1f;
-        float controlAngleThreshold = 0.001f;
+        protected float minDistanceForSlowdown = 1f;
+        protected float controlAngleThreshold = 0.001f;
 
-        private void HandleInputs()
+        protected virtual void HandleInputs()
         {
             if (!isAIPlane)
             {
@@ -869,190 +857,29 @@ namespace HeneGames.Airplane
 
         #endregion
 
-        #region Ai
+        #region AI (стаблонные методы, могут быть переопределены)
 
-        [SerializeField] LayerMask obstacleMask = ~0;
-        float detectDistance = 100f; 
+        [SerializeField] protected LayerMask obstacleMask = ~0;
+        [SerializeField] protected float detectDistance = 100f;
 
-        private void AiHandler()
+        protected virtual void AiHandler()
         {
-            var player = GameObject.FindGameObjectWithTag("PlayerPlane");
-            if (player != null)
-                target = player.transform.position;  // теперь target всегда актуален
-
-            // если всё ещё нет цели — выходим
-            if (target == null)
-                return;
-
-            // 2) желаемое направление с учётом препятствий
-            Vector3 desired = ComputeDesiredDirection();
-
-            // углы отклонения
-            float yawAngle = Vector3.SignedAngle(transform.forward, desired, transform.up);
-            float pitchAngle = Vector3.SignedAngle(transform.forward, desired, transform.right);
-
-            // 3) сразу считаем inputH/inputV из одного порога
-            inputH = Mathf.Clamp(yawAngle / controlAngleThreshold, -1f, 1f);
-            inputV = Mathf.Clamp(pitchAngle / controlAngleThreshold, -1f, 1f);
-
-            // 4) для чистого yaw устанавл. флаги на том же пороге
-            inputYawLeft = yawAngle < -controlAngleThreshold;
-            inputYawRight = yawAngle > controlAngleThreshold;
-
-            Vector3 toTarget = (target - transform.position).normalized;
-            float forwardDot = Vector3.Dot(transform.forward, toTarget);
-            float angleFactor = 1f - Mathf.Clamp01((forwardDot - 0.8f) / 0.2f);
-            float desiredTrust = Mathf.Lerp(0.2f, 1f, angleFactor);
-
-            // 2) считаем дистанцию и нормируем
-            float dist = Vector3.Distance(transform.position, target);
-            float distFactor = Mathf.Clamp01(dist / minDistanceForSlowdown);
-
-            // 3) комбинируем оба фактора
-            desiredTrust *= distFactor;
-
-            // 4) плавно обновляем trustProcent
-            trustProcent = Mathf.Lerp(trustProcent, desiredTrust, Time.deltaTime);
-            trustProcent = Mathf.Clamp(trustProcent, 0.2f, 1f);
-
-            inputTurbo = false;
-
+            // Пустой шаблон — реализуется в подклассе AI
         }
 
-        private Vector3 ComputeDesiredDirection()
+        protected virtual Vector3 ComputeDesiredDirection()
         {
-            lastHitPoints.Clear();
-            if (target == null)
-                return transform.forward;
-
-            Vector3 toTarget = (target - transform.position).normalized;
-
-            Vector3[] localDirs = {
-                Vector3.forward,
-                Quaternion.Euler(0,  30, 0) * Vector3.forward,
-                Quaternion.Euler(0, -30, 0) * Vector3.forward,
-                Quaternion.Euler(30,  0, 0) * Vector3.forward,
-                Quaternion.Euler(-30, 0, 0) * Vector3.forward,
-            };
-
-            float closestDist = float.MaxValue;
-            Vector3 hitNormal = Vector3.zero;
-            RaycastHit hitInfo;
-
-            Action<Vector3> CastFrom = origin =>
-            {
-                foreach (var ld in localDirs)
-                {
-                    Vector3 dir = transform.TransformDirection(ld);
-                    Debug.DrawRay(origin, dir * detectDistance, Color.red);
-                    if (Physics.Raycast(origin, dir, out hitInfo, detectDistance, obstacleMask))
-                    {
-                        lastHitPoints.Add(hitInfo.point);
-                        if (hitInfo.distance < closestDist)
-                        {
-                            closestDist = hitInfo.distance;
-                            hitNormal = hitInfo.normal;
-                        }
-                    }
-                }
-            };
-
-            Vector3 nose = transform.position + transform.forward * 2f;
-            CastFrom(nose);
-            CastFrom(nose - transform.right * 5f);
-            CastFrom(nose + transform.right * 5f);
-
-            if (closestDist < float.MaxValue)
-            {
-                Vector3 avoidDir = Vector3.Reflect(transform.forward, hitNormal).normalized;
-                float t = Mathf.Clamp01(1f - (closestDist / detectDistance));
-                Vector3 mixed = Vector3.Slerp(avoidDir, toTarget, 1f - t).normalized;
-
-                // Вместо проекции — возвращаем полный вектор, чтобы был и вертикальный компонент:
-                return mixed;
-            }
-
-            // без препятствий — тоже полный вектор к цели
-            return toTarget;
+            // Пустой шаблон — реализуется в подклассе AI
+            return transform.forward;
         }
 
-        private List<Vector3> lastHitPoints = new List<Vector3>();
-
-        public void Fire()
+        // Стрелять — виртуальный метод для AI
+        protected virtual void Fire()
         {
-            // 1) Быстрая проверка: перезарядка и цель
-            if (Time.time - lastFireTime < fireCooldown || target == null)
-                return;
-
-            // 2) Направление на цель
-            Vector3 toTarget = (target - firePoint.position).normalized;
-
-            // 3) Простой угол‑фильтр (можно убрать, если нужен всегда Raycast)
-            float angle = Vector3.Angle(firePoint.forward, toTarget);
-            if (angle > maxAimAngle)
-                return;
-
-            // 4) Разброс пули
-            Vector3 spreadDir = ApplySpread(toTarget, spreadAngle);
-
-            // 5) Отладочный луч на всю длину fireDistance
-            Debug.DrawRay(firePoint.position, spreadDir * fireDistance, Color.yellow, 0.5f);
-
-            // 6) Собственно выстрел по слоям shootMask
-            if (Physics.Raycast(
-                    firePoint.position,
-                    spreadDir,
-                    out RaycastHit hit,
-                    fireDistance,
-                    shootMask
-                ))
-            {
-                // Попадание
-                var stats = hit.collider.GetComponentInParent<PlaneStats>();
-                if (stats != null)
-                    stats.TakeDamage(bulletDamage);
-
-                StartCoroutine(ShowBulletTrail(firePoint.position, hit.point));
-            }
-            else
-            {
-                // Промах – рисуем трейл на всю дистанцию
-                Vector3 missPoint = firePoint.position + spreadDir * fireDistance;
-                StartCoroutine(ShowBulletTrail(firePoint.position, missPoint));
-            }
-
-            lastFireTime = Time.time;
+        
         }
 
-
-        private Vector3 ApplySpread(Vector3 direction, float maxSpreadAngle)
-        {
-            Quaternion randomRot = Quaternion.Euler(
-                UnityEngine.Random.Range(-maxSpreadAngle, maxSpreadAngle),
-                UnityEngine.Random.Range(-maxSpreadAngle, maxSpreadAngle),
-                0f
-            );
-
-            return (randomRot * direction).normalized;
-        }
-
-        private IEnumerator ShowBulletTrail(Vector3 start, Vector3 end)
-        {
-            GameObject lineObj = new GameObject("BulletTrail");
-            LineRenderer lr = lineObj.AddComponent<LineRenderer>();
-
-            lr.startWidth = 0.2f;
-            lr.endWidth = 0.2f;
-            lr.material = new Material(Shader.Find("Unlit/Color"));
-            lr.material.color = Color.yellow;
-
-            lr.SetPosition(0, start);
-            lr.SetPosition(1, end);
-
-            yield return new WaitForSeconds(0.3f); 
-
-            Destroy(lineObj);
-        }
+   
 
         #endregion
     }

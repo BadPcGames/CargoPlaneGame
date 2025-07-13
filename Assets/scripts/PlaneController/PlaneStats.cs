@@ -66,6 +66,8 @@ namespace Assets.scripts.PlaneController
                 health-=value;
             }
             OnAirplaneChangedHealth.Invoke((100f * health) / MaxHealth);
+
+            Debug.Log(health);
         }
 
         public string getDescription()

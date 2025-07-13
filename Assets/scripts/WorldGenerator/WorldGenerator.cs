@@ -30,6 +30,10 @@ namespace Assets.scripts.WorldGenerator
         private Vector2Int camChunk = new Vector2Int();
         private IEnumerator coroutine;
 
+
+        public delegate void StationsGenerated();
+        public static event StationsGenerated OnStationsGenerated;
+
         private void Awake()
         {
             Cam = GameObject.FindGameObjectWithTag("MainCamera");
@@ -98,6 +102,8 @@ namespace Assets.scripts.WorldGenerator
                     id++;
                 }
             }
+            OnStationsGenerated?.Invoke();
+
         }
 
 

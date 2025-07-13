@@ -535,6 +535,7 @@ MonoBehaviour:
   airplaneState: 0
   isAIPlane: 0
   target: {x: 0, y: 0, z: 0}
+  stabilisation: 0
   engineHeatEffects: []
   trailThickness: 0.221
   wingTrailEffects:
@@ -546,8 +547,8 @@ MonoBehaviour:
   yawTurboMultiplier: 0.5
   pitchTurboMultiplier: 0.5
   rollTurboMultiplier: 0.5
-  defaultSpeed: 75
-  accelerating: 8
+  defaultSpeed: 100
+  accelerating: 5
   deaccelerating: 1
   turboHeatingSpeed: 17.6
   turboCooldownSpeed: 5.7
@@ -575,23 +576,10 @@ MonoBehaviour:
   takeoffLenght: 30
   danger: {fileID: 8300000, guid: 4fb0faf435a20644296048b83371c9ad, type: 3}
   explouse: {fileID: 0}
-  firePoint: {fileID: 434697526470780726}
-  bulletDamage: 1
-  fireDistance: 100
-  fireAngleThreshold: 5
-  bulletSpeed: 100
-  fireCooldown: 0.5
-  lastFireTime: -999
-  spreadAngle: 2
-  maxAimAngle: 15
-  bulletRadius: 0.5
-  shootMask:
-    serializedVersion: 2
-    m_Bits: 0
-  dynamicAngleFactor: 3
   obstacleMask:
     serializedVersion: 2
     m_Bits: 4294967295
+  detectDistance: 100
 --- !u!54 &6000215176582953689
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -651,14 +639,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 546668986828c984eb9d70a91539ca36, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Name: Big Turbo Plane
+  Name: ' X-200 Thunder Roc'
   PlaneId: 4
   PlaneImage: {fileID: 21300000, guid: 69b774719abd70343aee05c6514a5d86, type: 3}
   MaxHealth: 500
   CargoSpace: 500
-  Descrition: default cargo plane
+  Descrition: "The X-200 Thunder Roc is a colossal turbo-powered aircraft, the crown
+    jewel of heavy aviation. Capable of carrying massive cargo loads across vast
+    distances, it\u2019s named after the mythical Roc\u2014a giant bird said to lift
+    elephants into the sky. With thunderous engines and unmatched presence, this
+    aircraft is the ultimate symbol of aerial dominance."
   Price: 20000
   Bought: 0
+  health: 0
 --- !u!1 &6330720459147056592
 GameObject:
   m_ObjectHideFlags: 0

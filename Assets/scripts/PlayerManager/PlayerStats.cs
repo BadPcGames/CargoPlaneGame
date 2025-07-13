@@ -1,3 +1,4 @@
+using Assets.scripts.WorldGenerator;
 using HeneGames.Airplane;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,14 +26,29 @@ public class PlayerStats : MonoBehaviour
     {
         playerUi = GameObject.Find("PlayerCanvas");
         Plane = GameObject.FindGameObjectWithTag("PlayerPlane");
-        SpawnPlaneOnRunway();
         playerUi.GetComponent<PlayerUi>().setMoney(money);
         playerUi.GetComponent<PlayerUi>().setHaveCargo(false);
+        SpawnPlaneOnRunway();
+    }
+
+    private void OnEnable()
+    {
+        WorldGenerator.OnStationsGenerated += SetPlaneToHomeRunway;
+    }
+
+    private void OnDisable()
+    {
+        WorldGenerator.OnStationsGenerated -= SetPlaneToHomeRunway;
+    }
+
+    private void SetPlaneToHomeRunway()
+    {
+        SpawnPlaneOnRunway();
     }
 
     public void SpawnPlaneOnRunway()
     {
-        GameObject runway = GameObject.Find("Home Runway");
+        GameObject runway = GameObject.FindGameObjectWithTag("Base");
         if (runway == null)
         {
             Debug.Log("Runway not found!");
@@ -80,7 +96,6 @@ public class PlayerStats : MonoBehaviour
         }
         return setCargo(c);
     }
-
 
     public void deliveredCargo()
     {
@@ -130,8 +145,6 @@ public class PlayerStats : MonoBehaviour
     public void ChangePlane(GameObject _newPlane)
     {
         GameObject newPlane = Instantiate(_newPlane, Plane.transform.position, Plane.transform.rotation);
-        //newPlane.transform.parent = Plane.transform.parent;
-
         newPlane.tag = "PlayerPlane"; 
 
         var controller = newPlane.GetComponent<SimpleAirPlaneController>();

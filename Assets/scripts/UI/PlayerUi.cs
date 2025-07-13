@@ -1,3 +1,5 @@
+using NUnit.Framework;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,6 +17,7 @@ public class PlayerUi : MonoBehaviour
         HomeWaipointManager();
         CargoManager();
         MoneyManager();
+        StationWaipointManager();
     }
 
     public void setHaveCargo(bool value)
@@ -49,6 +52,48 @@ public class PlayerUi : MonoBehaviour
             {
                 transform.Find("WaipointToBase").GetComponent<WaypointMarker>().setTarget(null);
             }
+        }
+    }
+
+    int idOfStation=-1;
+    GameObject[] stationsList;
+
+    private void StationWaipointManager()
+    {
+        if (Input.GetKeyDown(KeyCode.N))
+        {
+            transform.Find("WaipointToBase").GetComponent<WaypointMarker>().setTarget(null);
+        }
+        else if (Input.GetKeyDown(KeyCode.B))
+        {
+            if (stationsList == null)
+            {
+                stationsList = GameObject.FindGameObjectsWithTag("Station");
+            }
+
+            idOfStation++;
+
+            if (idOfStation > stationsList.Length - 1)
+            {
+                idOfStation = stationsList.Length - 1;
+            }
+
+            transform.Find("WaipointToBase").GetComponent<WaypointMarker>().setTarget(stationsList[idOfStation].transform);
+        }
+        else if (Input.GetKeyDown(KeyCode.V))
+        {
+            if (stationsList == null)
+            {
+                stationsList = GameObject.FindGameObjectsWithTag("Station");
+            }
+
+            idOfStation--;
+            if (idOfStation < 0)
+            {
+                idOfStation = 0;
+            }
+
+            transform.Find("WaipointToBase").GetComponent<WaypointMarker>().setTarget(stationsList[idOfStation].transform);
         }
     }
 }

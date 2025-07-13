@@ -123,14 +123,14 @@ namespace HeneGames.Airplane
                 Button acceptButton = card.transform.Find("AcceptButton").GetComponent<Button>();
 
                 nameText.text = $"{cargoList[i].getName()}";
-                descriptionText.text = $"Доставь груз {cargoList[i].getName()}, требующий {cargoList[i].getRequiredSpace()} пространства, к станции: {cargoList[i].getTarget().getId()}";
-                priceText.text = $"Награда: {cargoList[i].getReword()}";
-                distanceText.text = $"Растояние: {cargoList[i].getDistance()}";
+                descriptionText.text = $"Deliver the cargo {cargoList[i].getName()}, which requires {cargoList[i].getRequiredSpace()} space, to the station: {cargoList[i].getTarget().getId()}";
+                priceText.text = $"Reward: {cargoList[i].getReword()}";
+                distanceText.text = $"Distance: {cargoList[i].getDistance()}";
 
                 bool canGetCargo = player.GetComponent<PlayerStats>().Plane.GetComponent<PlaneStats>().getCargoSpace() > cargoList[i].getRequiredSpace();
                 if (!canGetCargo)
                 {
-                    descriptionText.text = descriptionText.text + "\n Груз слишком большой для вашего самолёта"; 
+                    descriptionText.text = descriptionText.text + "\nThe cargo is too large for your plane";
                 }
                 acceptButton.interactable = canGetCargo;
 

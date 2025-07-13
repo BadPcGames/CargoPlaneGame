@@ -123,7 +123,7 @@ namespace HeneGames.Airplane
 
                 nameText.text = $"{planes[i].GetComponent<PlaneStats>().getName()}";
                 description.text = $"{planes[i].GetComponent<PlaneStats>().getDescription()}";
-                price.text= $"{planes[i].GetComponent<PlaneStats>().getPrice()}";
+                price.text= $"Price: {planes[i].GetComponent<PlaneStats>().getPrice()} $";
                 planeImage.sprite = planes[i].GetComponent<PlaneStats>().getPlaneImage();
                 acceptButton.onClick.AddListener(() => OnChoosePlaneButton(planes[index]));
                 buyButton.onClick.AddListener(() => OnTryBuyPlaneButton(index));

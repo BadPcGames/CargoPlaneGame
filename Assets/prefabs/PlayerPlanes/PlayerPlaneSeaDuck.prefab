@@ -535,6 +535,7 @@ MonoBehaviour:
   airplaneState: 0
   isAIPlane: 0
   target: {x: 0, y: 0, z: 0}
+  stabilisation: 0
   engineHeatEffects: []
   trailThickness: 0.221
   wingTrailEffects:
@@ -546,7 +547,7 @@ MonoBehaviour:
   yawTurboMultiplier: 0.5
   pitchTurboMultiplier: 0.5
   rollTurboMultiplier: 0.5
-  defaultSpeed: 50
+  defaultSpeed: 100
   accelerating: 8
   deaccelerating: 1
   turboHeatingSpeed: 17.6
@@ -577,23 +578,10 @@ MonoBehaviour:
   takeoffLenght: 30
   danger: {fileID: 8300000, guid: 4fb0faf435a20644296048b83371c9ad, type: 3}
   explouse: {fileID: 0}
-  firePoint: {fileID: 434697526470780726}
-  bulletDamage: 1
-  fireDistance: 100
-  fireAngleThreshold: 5
-  bulletSpeed: 100
-  fireCooldown: 0.5
-  lastFireTime: -999
-  spreadAngle: 2
-  maxAimAngle: 15
-  bulletRadius: 0.5
-  shootMask:
-    serializedVersion: 2
-    m_Bits: 0
-  dynamicAngleFactor: 3
   obstacleMask:
     serializedVersion: 2
     m_Bits: 4294967295
+  detectDistance: 100
 --- !u!54 &6000215176582953689
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -653,14 +641,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 546668986828c984eb9d70a91539ca36, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Name: SeaDuck
+  Name: M-12 Sea Duck
   PlaneId: 1
   PlaneImage: {fileID: 21300000, guid: b3f0baae8b6be404f8d28d65601463a2, type: 3}
   MaxHealth: 100
   CargoSpace: 100
-  Descrition: default cargo plane
+  Descrition: "prop aircraft built for versatility and endurance. With excellent
+    handling over water and rough terrain, it thrives in coastal missions and archipelago
+    routes. Named after the sea duck\u2014a bird known for its adaptability in both
+    air and water\u2014it\u2019s a favorite among bush pilots and smugglers alike."
   Price: 10000
-  Bought: 0
+  Bought: 1
+  health: 0
 --- !u!1 &6330720459147056592
 GameObject:
   m_ObjectHideFlags: 0
@@ -769,7 +761,7 @@ TrailRenderer:
       m_RotationOrder: 4
     colorGradient:
       serializedVersion: 2
-      key0: {r: 1, g: 1, b: 1, a: 1}
+      key0: {r: 0.6981132, g: 0.67446965, b: 0.049394794, a: 1}
       key1: {r: 1, g: 1, b: 1, a: 1}
       key2: {r: 0, g: 0, b: 0, a: 0}
       key3: {r: 0, g: 0, b: 0, a: 0}
@@ -794,7 +786,7 @@ TrailRenderer:
       atime6: 0
       atime7: 0
       m_Mode: 0
-      m_ColorSpace: -1
+      m_ColorSpace: 0
       m_NumColorKeys: 2
       m_NumAlphaKeys: 2
     numCornerVertices: 0
@@ -970,7 +962,7 @@ TrailRenderer:
       m_RotationOrder: 4
     colorGradient:
       serializedVersion: 2
-      key0: {r: 1, g: 1, b: 1, a: 1}
+      key0: {r: 0.6981132, g: 0.67446965, b: 0.049394794, a: 1}
       key1: {r: 1, g: 1, b: 1, a: 1}
       key2: {r: 0, g: 0, b: 0, a: 0}
       key3: {r: 0, g: 0, b: 0, a: 0}
@@ -995,7 +987,7 @@ TrailRenderer:
       atime6: 0
       atime7: 0
       m_Mode: 0
-      m_ColorSpace: -1
+      m_ColorSpace: 0
       m_NumColorKeys: 2
       m_NumAlphaKeys: 2
     numCornerVertices: 0

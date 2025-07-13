@@ -600,7 +600,7 @@ MonoBehaviour:
   yawTurboMultiplier: 0.5
   pitchTurboMultiplier: 0.5
   rollTurboMultiplier: 0.5
-  defaultSpeed: 45
+  defaultSpeed: 100
   accelerating: 8
   deaccelerating: 1
   turboHeatingSpeed: 17.6
@@ -633,23 +633,10 @@ MonoBehaviour:
   takeoffLenght: 30
   danger: {fileID: 8300000, guid: 4fb0faf435a20644296048b83371c9ad, type: 3}
   explouse: {fileID: 0}
-  firePoint: {fileID: 434697526470780726}
-  bulletDamage: 1
-  fireDistance: 100
-  fireAngleThreshold: 5
-  bulletSpeed: 100
-  fireCooldown: 0.5
-  lastFireTime: -999
-  spreadAngle: 2
-  maxAimAngle: 15
-  bulletRadius: 0.5
-  shootMask:
-    serializedVersion: 2
-    m_Bits: 0
-  dynamicAngleFactor: 3
   obstacleMask:
     serializedVersion: 2
     m_Bits: 4294967295
+  detectDistance: 100
 --- !u!54 &6000215176582953689
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -709,12 +696,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 546668986828c984eb9d70a91539ca36, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Name: Very Big Prop Airplane
+  Name: ' Q-44 Condor'
   PlaneId: 2
   PlaneImage: {fileID: 21300000, guid: 70fce1bb0c22a3447b61e4fef7e33b35, type: 3}
   MaxHealth: 190
   CargoSpace: 190
-  Descrition: default cargo plane
+  Descrition: The Q-44 Condor is a powerful long-range cargo aircraft equipped with
+    four propeller engines. It boasts exceptional lift capacity and extended flight
+    range. Inspired by the majestic Andean condor, this aircraft dominates the skies
+    with its wide wingspan and unwavering strength, making it perfect for high-altitude,
+    intercontinental deliveries.
   Price: 10000
   Bought: 0
   health: 0

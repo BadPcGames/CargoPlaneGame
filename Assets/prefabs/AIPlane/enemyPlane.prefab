@@ -181,9 +181,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1038269185402689463}
-  - component: {fileID: 5159784980364410503}
   - component: {fileID: 6000215176582953689}
   - component: {fileID: -2718912269817621121}
+  - component: {fileID: 1787093832753594104}
   m_Layer: 0
   m_Name: enemyPlane
   m_TagString: Untagged
@@ -210,79 +210,6 @@ Transform:
   - {fileID: 2496853549531455226}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5159784980364410503
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6126436154110243637}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d236260ee0d659a4383b8680de7ec2ad, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  airplaneState: 0
-  isAIPlane: 1
-  target: {x: 0, y: 0, z: 0}
-  engineHeatEffects: []
-  trailThickness: 0.221
-  wingTrailEffects:
-  - {fileID: 2579415842025248918}
-  - {fileID: 8523101800671204450}
-  yawSpeed: 30
-  pitchSpeed: 50
-  rollSpeed: 90
-  yawTurboMultiplier: 0.5
-  pitchTurboMultiplier: 0.5
-  rollTurboMultiplier: 0.5
-  defaultSpeed: 60
-  accelerating: 8
-  deaccelerating: 1
-  turboHeatingSpeed: 17.6
-  turboCooldownSpeed: 5.7
-  turboHeat: 0
-  turboOverheatOver: 0
-  turboOverheat: 0
-  sidewaysMovement: 15
-  sidewaysMovementXRot: 0.0351
-  sidewaysMovementYRot: 0.88
-  sidewaysMovementYPos: -0.033
-  engineSoundSource: {fileID: 8671981589485048}
-  engineSounds:
-  - {fileID: -6409021281126588258, guid: 2a1e71113a8973b4bb620d50366b07d2, type: 3}
-  - {fileID: -6409021281126588258, guid: 54ebce43c02e0834890573164d1bb44e, type: 3}
-  - {fileID: -6409021281126588258, guid: 3f022b40c9bea8c438fa7a9fd9af59ac, type: 3}
-  maxEngineSound: 1
-  defaultSoundPitch: 1
-  turboSoundPitch: 1.5
-  propelSpeedMultiplier: 100
-  propellers:
-  - {fileID: 2076412358390825406}
-  turbineLightDefault: 1
-  turbineLightTurbo: 5
-  turbineLights: []
-  crashCollidersRoot: {fileID: 8736839649805236958}
-  takeoffLenght: 100
-  danger: {fileID: 8300000, guid: 4fb0faf435a20644296048b83371c9ad, type: 3}
-  explouse: {fileID: 0}
-  firePoint: {fileID: 434697526470780726}
-  bulletDamage: 1
-  fireDistance: 1000
-  fireAngleThreshold: 5
-  bulletSpeed: 100
-  fireCooldown: 0.5
-  lastFireTime: -999
-  spreadAngle: 2
-  maxAimAngle: 15
-  bulletRadius: 0.5
-  shootMask:
-    serializedVersion: 2
-    m_Bits: 8
-  dynamicAngleFactor: 3
-  obstacleMask:
-    serializedVersion: 2
-    m_Bits: 64
 --- !u!54 &6000215176582953689
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -330,6 +257,77 @@ MonoBehaviour:
   Descrition: 
   Price: 0
   Bought: 0
+  health: 0
+--- !u!114 &1787093832753594104
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6126436154110243637}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e290e8f645da09046a66ef99234b9794, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  airplaneState: 0
+  isAIPlane: 1
+  target: {x: 0, y: 0, z: 0}
+  stabilisation: 0
+  engineHeatEffects: []
+  trailThickness: 0.045
+  wingTrailEffects: []
+  yawSpeed: 50
+  pitchSpeed: 100
+  rollSpeed: 200
+  yawTurboMultiplier: 0.3
+  pitchTurboMultiplier: 0.5
+  rollTurboMultiplier: 1
+  defaultSpeed: 40
+  accelerating: 10
+  deaccelerating: 5
+  turboHeatingSpeed: 0
+  turboCooldownSpeed: 0
+  turboHeat: 0
+  turboOverheatOver: 0
+  turboOverheat: 0
+  sidewaysMovement: 15
+  sidewaysMovementXRot: 0.012
+  sidewaysMovementYRot: 1.5
+  sidewaysMovementYPos: 0.1
+  engineSoundSource: {fileID: 0}
+  engineSounds: []
+  maxEngineSound: 1
+  defaultSoundPitch: 1
+  turboSoundPitch: 1.5
+  propelSpeedMultiplier: 100
+  propellers:
+  - {fileID: 2076412358390825406}
+  turbineLightDefault: 1
+  turbineLightTurbo: 5
+  turbineLights: []
+  crashCollidersRoot: {fileID: 8736839649805236958}
+  takeoffLenght: 30
+  danger: {fileID: 0}
+  explouse: {fileID: 0}
+  firePoint: {fileID: 434697526470780726}
+  bulletDamage: 1
+  fireDistance: 1300
+  fireAngleThreshold: 5
+  bulletSpeed: 10
+  fireCooldown: 0.02
+  lastFireTime: -999
+  spreadAngle: 2
+  maxAimAngle: 15
+  bulletRadius: 0.5
+  shootMask:
+    serializedVersion: 2
+    m_Bits: 0
+  dynamicAngleFactor: 3
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  detectDistance: 1000
 --- !u!1 &6330720459147056592
 GameObject:
   m_ObjectHideFlags: 0

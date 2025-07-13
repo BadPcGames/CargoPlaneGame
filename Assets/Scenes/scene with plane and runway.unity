@@ -436,6 +436,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 31.482
       objectReference: {fileID: 0}
+    - target: {fileID: 1787093832753594104, guid: 63c90a985ae7e234299eea0748c018f2, type: 3}
+      propertyPath: shootMask.m_Bits
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1787093832753594104, guid: 63c90a985ae7e234299eea0748c018f2, type: 3}
+      propertyPath: obstacleMask.m_Bits
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6126436154110243637, guid: 63c90a985ae7e234299eea0748c018f2, type: 3}
       propertyPath: m_Name
       value: enemyPlane

@@ -78,7 +78,8 @@ public class PlayerStats : MonoBehaviour
             reword = currentCargo.getReword();
             playerUi.transform.Find("WaipointToCargo").GetComponent<WaypointMarker>().setTarget(currentCargo.getTarget().getPosition());
             playerUi.GetComponent<PlayerUi>().setHaveCargo(true);
-            return $" Cargo set! Target: Station ¹{currentCargo.getTarget().getId()}, Reward: {currentCargo.getReword()}";
+            playerUi.GetComponent<PlayerUi>().setReward(reword);
+            return $" Cargo set! Target: Station ¹{currentCargo.getTarget().getId()}, Reward: {reword}";
             
         }
         else
@@ -100,11 +101,31 @@ public class PlayerStats : MonoBehaviour
     public void deliveredCargo()
     {
         setMoney((float)reword+money);
+        RemoveCargo();
+    }
+
+    private void RemoveCargo()
+    {
         currentCargo = null;
         targetPosition = null;
         reword = 0;
         playerUi.transform.Find("WaipointToCargo").GetComponent<WaypointMarker>().setTarget(null);
+        playerUi.GetComponent<PlayerUi>().setHaveCargo(false);
     }
+
+    public string tryRemoveCargo()
+    {
+        if (currentCargo == null)
+        {
+            return "You don`t have Cargo";
+        }
+        else
+        {
+            RemoveCargo();
+            return "Cargo removed";
+        }
+    }
+
 
     public void setMoney(float value)
     {

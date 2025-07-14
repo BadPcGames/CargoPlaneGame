@@ -93,7 +93,7 @@ namespace HeneGames.Airplane
         [SerializeField] private float rollTurboMultiplier = 1f;
 
         [Header("Moving speed")]
-        [Range(5f, 100f)]
+        [Range(5f, 800f)]
         [SerializeField] private float defaultSpeed = 10f;
 
         [Range(0.1f, 50f)]
@@ -180,7 +180,6 @@ namespace HeneGames.Airplane
             currentSpeed = defaultSpeed*trustProcent;
             ChangeSpeedMultiplier(1f);
             PlaneUi = GameObject.Find("PlaneControllCanvas");
-            //Get and set rigidbody
             rb = GetComponent<Rigidbody>();
             rb.isKinematic = true;
             rb.useGravity = false;

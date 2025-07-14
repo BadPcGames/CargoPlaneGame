@@ -124,9 +124,10 @@ namespace Assets.scripts.PlaneController
 
         protected override void Fire()
         {
-            if (Time.time - lastFireTime < fireCooldown) return;
+            if (Time.time - lastFireTime < fireCooldown|| fireDistance<Vector3.Distance(transform.position,target)) return;
 
             Vector3 dir = firePoint.forward;
+            dir = AddSpreadToDirection(dir, spreadAngle);
             Vector3 startPos = firePoint.position;
             Vector3 endPos = startPos + dir * fireDistance;
 
@@ -138,10 +139,22 @@ namespace Assets.scripts.PlaneController
                     stats.TakeDamage(bulletDamage);
             }
 
-            StartCoroutine(ShowBulletTrail(firePoint.position, hit.point));
+            StartCoroutine(ShowBulletTrail(firePoint.position, endPos));
             lastFireTime = Time.time;
         }
 
+
+        private Vector3 AddSpreadToDirection(Vector3 direction, float angleInDegrees)
+        {
+            float angleRad = angleInDegrees * Mathf.Deg2Rad;
+            Vector3 randomDir = Random.insideUnitSphere;
+
+            Vector3 axis = Vector3.Cross(direction, randomDir).normalized;
+            float randomAngle = Random.Range(0f, angleInDegrees);
+
+            Quaternion rotation = Quaternion.AngleAxis(randomAngle, axis);
+            return rotation * direction;
+        }
 
         private IEnumerator ShowBulletTrail(Vector3 start, Vector3 end)
         {

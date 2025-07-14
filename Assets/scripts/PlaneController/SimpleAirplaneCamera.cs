@@ -15,12 +15,17 @@ namespace HeneGames.Airplane
         [Header("Camera values")]
         [SerializeField] private float cameraDefaultFov = 60f;
         [SerializeField] private float cameraTurboFov = 40f;
+        [SerializeField] private float sensivity = 10f;
 
         [Header("Camera positions")]
         [SerializeField] List<Transform> cameraPositions;
 
+        public float maxYAngle = 80f;
+
+        private Vector2 currentRotation;
         private bool isCrash=false;
         private int currentPosition;
+        private bool cameaFreeMode=false;
 
         private void Awake()
         {
@@ -33,23 +38,76 @@ namespace HeneGames.Airplane
         private void OnEnable()
         {
             airPlaneController.crashAction += Crash;
+            HomeRunwayUIManager.OnCameraRotationAvailableChanges += ChangeCameraMod;
+            RunwayUIManager.OnCameraRotationAvailableChanges += ChangeCameraMod;
         }
 
         private void OnDisable()
         {
             airPlaneController.crashAction -= Crash;
+            HomeRunwayUIManager.OnCameraRotationAvailableChanges -= ChangeCameraMod;
+            RunwayUIManager.OnCameraRotationAvailableChanges -= ChangeCameraMod;
         }
 
         private void Update()
         {
             CameraFovUpdate();
             CameraPositionUpdate();
-
+            if (cameaFreeMode)
+            {
+                CameraRotate();
+            }
             if (isCrash) 
             {
                 DeathCam();
             }
         }
+
+    
+        private void CameraRotate()
+        {
+            currentRotation.x += Input.GetAxis("Mouse X") *sensivity;
+            currentRotation.y -= Input.GetAxis("Mouse Y") * sensivity;
+            currentRotation.x = Mathf.Repeat(currentRotation.x, 360);
+            currentRotation.y = Mathf.Clamp(currentRotation.y, -maxYAngle, maxYAngle);
+            Quaternion baseRotation = transform.rotation;
+            Quaternion mouseRotation = Quaternion.Euler(currentRotation.y, currentRotation.x, 0);
+            Camera.main.transform.rotation = baseRotation * mouseRotation;
+
+            //if (Input.GetMouseButtonDown(1))
+            //{
+            //    Cursor.lockState = CursorLockMode.Locked;
+            //}
+            //if (Input.GetMouseButtonDown(0))
+            //{
+            //    Cursor.lockState = CursorLockMode.Confined;
+            //}
+            if (Input.GetMouseButtonDown(2))
+            {
+                ResetCameraRotation();
+            }
+        }
+
+        private void ChangeCameraMod(bool mode)
+        {
+            if (!mode)
+            {
+                ResetCameraRotation();
+                Cursor.lockState = CursorLockMode.Confined;
+            }
+            else
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+            }
+
+            cameaFreeMode= mode;
+        }
+
+        private void ResetCameraRotation()
+        {
+            currentRotation = new Vector2();
+        }
+
 
         private void CameraPositionUpdate()
         {

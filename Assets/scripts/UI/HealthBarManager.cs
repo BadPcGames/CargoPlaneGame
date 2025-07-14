@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class HealthBarManager : MonoBehaviour
 {
-    public Slider healthBar;
+    public GameObject healthBar;
     public float healthProcent;
     public float lerpedSpeed=0.05f;
 
@@ -16,10 +16,7 @@ public class HealthBarManager : MonoBehaviour
 
     private void Update()
     {
-        if (healthProcent != healthBar.value)
-        {
-            healthBar.value=healthProcent;
-        }
+        healthBar.transform.localScale = new Vector3(healthProcent / 100, 1f, 1f);
     }
 
     private void OnEnable()

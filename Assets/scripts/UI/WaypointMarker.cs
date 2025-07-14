@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -78,7 +79,14 @@ public class WaypointMarker : MonoBehaviour
             Vector2 toMarker = ((Vector2)clamped - screenCenter).normalized;
         }
 
-        distanceText.GetComponent<Text>().text = Mathf.RoundToInt(realDist).ToString() + " m";
+        if (realDist > 1100)
+        {
+            distanceText.GetComponent<Text>().text = Math.Round(realDist/1000,1).ToString() + " km";
+        }
+        else
+        {
+            distanceText.GetComponent<Text>().text = Mathf.RoundToInt(realDist).ToString() + " m";
+        }  
     }
 
     public void setTarget(Transform value)

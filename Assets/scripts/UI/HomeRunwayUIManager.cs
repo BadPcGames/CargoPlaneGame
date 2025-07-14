@@ -24,6 +24,9 @@ namespace HeneGames.Airplane
         private PlaneShop PlaneShop;
         private bool cargoGenerated = false;
 
+        public delegate void CameraRotationAvailable(bool rotationAvailable);
+        public static event CameraRotationAvailable OnCameraRotationAvailableChanges;
+
         private void Awake()
         {
             player = GameObject.Find("player");
@@ -38,6 +41,7 @@ namespace HeneGames.Airplane
             {
                 SetChildrenActive(planeUi, false);
                 debugText.text = "";
+                OnCameraRotationAvailableChanges?.Invoke(false);
             }
             else if (runway.AirplaneLandingCompleted())
             {
@@ -53,6 +57,7 @@ namespace HeneGames.Airplane
                 SetChildrenActive(planeUi, true);
                 uiContent.SetActive(false);
                 cargoGenerated = false;
+                OnCameraRotationAvailableChanges?.Invoke(true);
             }
             else
             {

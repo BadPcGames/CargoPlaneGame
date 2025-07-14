@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
 using TMPro;
-using Unity.VisualScripting;
-using System;
-using System.Collections;
 using UnityEngine.UI;
 using Assets.scripts.PlaneController;
+using System.Collections.Generic;
+using System.Linq;
+
 
 namespace HeneGames.Airplane
 {
@@ -20,10 +20,11 @@ namespace HeneGames.Airplane
 
         private GameObject planeUi;
         private StationStats station;
-
-
         private bool cargoGenerated = false;
-        private bool cargoUnloaded = false;
+        private List<Cargo> cargoList;
+
+        public delegate void CameraRotationAvailable(bool rotationAvailable);
+        public static event CameraRotationAvailable OnCameraRotationAvailableChanges;
 
         private void Awake()
         {
@@ -53,9 +54,24 @@ namespace HeneGames.Airplane
             player.GetComponent<Cargomanager>().chooseCargo(index);
         }
 
+        public void OnSortByValue(bool fromLowToMax)
+        {
+            SortByValue(fromLowToMax);
+        }
+
+        public void OnSortBySpace(bool fromLowToMax)
+        {
+            SortBySpace(fromLowToMax);
+        }
+
         public void OnUnloadCargoButton()
         {
             debugText.text = player.GetComponent<PlayerStats>().tryUnloadPlane(station.transform);
+        }
+
+        public void OnRemoveCargoButton()
+        {
+            debugText.text = player.GetComponent<PlayerStats>().tryRemoveCargo();
         }
 
         private void Update()
@@ -64,6 +80,7 @@ namespace HeneGames.Airplane
             {
                 SetChildrenActive(planeUi, false);
                 debugText.text = "";
+                OnCameraRotationAvailableChanges?.Invoke(false);
             }
             else if (runway.AirplaneLandingCompleted())
             {
@@ -71,7 +88,8 @@ namespace HeneGames.Airplane
                 if (!cargoGenerated)
                 {
                     player.GetComponent<Cargomanager>().GanarateCargo(40, station.getId());
-                    GenerateCargoCards();
+                    cargoList= player.GetComponent<Cargomanager>().getCargoList();
+                    ShowCargoCards();
                     cargoGenerated = true;
                 }
             }
@@ -80,6 +98,7 @@ namespace HeneGames.Airplane
                 SetChildrenActive(planeUi, true);
                 uiContent.SetActive(false);
                 cargoGenerated = false;
+                OnCameraRotationAvailableChanges?.Invoke(true);
             }
             else
             {
@@ -102,14 +121,12 @@ namespace HeneGames.Airplane
             uiContent.SetActive(false);
         }
 
-        private void GenerateCargoCards()
+        private void ShowCargoCards()
         {
             foreach (Transform child in cargoListContent)
             {
                 Destroy(child.gameObject);
             }
-
-            var cargoList = player.GetComponent<Cargomanager>().getCargoList();
 
             for (int i = 0; i < cargoList.Count; i++)
             {
@@ -138,6 +155,32 @@ namespace HeneGames.Airplane
             }
         }
 
+        private void SortByValue(bool fromLowToMax)
+        {
+
+            if (fromLowToMax)
+            {
+                cargoList = cargoList.OrderBy(w => w.getReword()).ToList();
+            }
+            else
+            {
+                cargoList = cargoList.OrderByDescending(w => w.getReword()).ToList();
+            }
+            ShowCargoCards();
+        }
+
+        private void SortBySpace(bool fromLowToMax)
+        {
+            if (fromLowToMax)
+            {
+                cargoList = cargoList.OrderBy(w => w.getRequiredSpace()).ToList();
+            }
+            else
+            {
+                cargoList = cargoList.OrderByDescending(w => w.getRequiredSpace()).ToList();
+            }
+            ShowCargoCards();
+        }
 
 
     }

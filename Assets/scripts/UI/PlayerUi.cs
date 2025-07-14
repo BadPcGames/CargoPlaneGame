@@ -8,26 +8,48 @@ public class PlayerUi : MonoBehaviour
 {
     public GameObject box;
     public TextMeshProUGUI moneyText;
+    public TextMeshProUGUI rewardText;
 
     private bool haveCargo;
     private float money;
+    private float reward;
 
     private void Update()
     {
         HomeWaipointManager();
-        CargoManager();
-        MoneyManager();
         StationWaipointManager();
+    }
+
+
+    public void RewardManager()
+    {
+        if (haveCargo&&(reward > 0))
+        {
+            rewardText.text = reward + " $";
+        }
+        else
+        {
+            rewardText.text = "";
+        }
     }
 
     public void setHaveCargo(bool value)
     {
         haveCargo = value;
+        CargoManager();
+        RewardManager();
     }
 
     public void setMoney(float value)
     {
        money = value;
+       MoneyManager();
+    }
+
+    public void setReward(float rewardValue)
+    {
+        reward = rewardValue;
+        RewardManager();
     }
 
     private void CargoManager()

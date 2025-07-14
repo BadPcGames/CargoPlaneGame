@@ -52,7 +52,7 @@ public class Cargo
 
         distance = Vector3.Distance
             (c.transform.position, t.transform.position);
-        reword = distance * requiredSpace*valueKoficient;
+        reword = distance * requiredSpace*valueKoficient/1000f;
     }
 
 }

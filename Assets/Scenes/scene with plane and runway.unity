@@ -228,7 +228,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.3
-  far clip plane: 1000
+  far clip plane: 5000
   field of view: 60
   orthographic: 0
   orthographic size: 5
@@ -726,6 +726,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.x
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3600091295915571513, guid: 92cd215acbf9caa459aa06c101a7c462, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0.71499634
+      objectReference: {fileID: 0}
     - target: {fileID: 7051635161447142156, guid: 92cd215acbf9caa459aa06c101a7c462, type: 3}
       propertyPath: m_Name
       value: PlayerCanvas
@@ -1135,7 +1139,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6155624936762423847, guid: 48e73f53abcb6e448bc03ba261d725cf, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.0032958984
+      value: -0.0019378662
       objectReference: {fileID: 0}
     - target: {fileID: 6523210139585248499, guid: 48e73f53abcb6e448bc03ba261d725cf, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1428,7 +1432,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6155624936762423847, guid: 48e73f53abcb6e448bc03ba261d725cf, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.0032958984
+      value: -0.0019378662
       objectReference: {fileID: 0}
     - target: {fileID: 6523210139585248499, guid: 48e73f53abcb6e448bc03ba261d725cf, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1614,7 +1618,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.3
-  far clip plane: 1000
+  far clip plane: 5000
   field of view: 60
   orthographic: 0
   orthographic size: 5
@@ -1858,7 +1862,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6155624936762423847, guid: 48e73f53abcb6e448bc03ba261d725cf, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.0032958984
+      value: -0.0019378662
       objectReference: {fileID: 0}
     - target: {fileID: 6523210139585248499, guid: 48e73f53abcb6e448bc03ba261d725cf, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2277,7 +2281,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6155624936762423847, guid: 48e73f53abcb6e448bc03ba261d725cf, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.0032958984
+      value: -0.0019378662
       objectReference: {fileID: 0}
     - target: {fileID: 6523210139585248499, guid: 48e73f53abcb6e448bc03ba261d725cf, type: 3}
       propertyPath: m_LocalPosition.x

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
 using static HeneGames.Airplane.SimpleAirPlaneController;
+using Unity.VisualScripting;
 
 namespace HeneGames.Airplane
 {
@@ -23,7 +24,6 @@ namespace HeneGames.Airplane
         public float maxYAngle = 80f;
 
         private Vector2 currentRotation;
-        private bool isCrash=false;
         private int currentPosition;
         private bool cameaFreeMode=false;
 
@@ -37,14 +37,14 @@ namespace HeneGames.Airplane
 
         private void OnEnable()
         {
-            airPlaneController.crashAction += Crash;
+            airPlaneController.explouse += Explouse;
             HomeRunwayUIManager.OnCameraRotationAvailableChanges += ChangeCameraMod;
             RunwayUIManager.OnCameraRotationAvailableChanges += ChangeCameraMod;
         }
 
         private void OnDisable()
         {
-            airPlaneController.crashAction -= Crash;
+            airPlaneController.explouse -= Explouse;
             HomeRunwayUIManager.OnCameraRotationAvailableChanges -= ChangeCameraMod;
             RunwayUIManager.OnCameraRotationAvailableChanges -= ChangeCameraMod;
         }
@@ -53,16 +53,14 @@ namespace HeneGames.Airplane
         {
             CameraFovUpdate();
             CameraPositionUpdate();
-            if (cameaFreeMode)
-            {
-                CameraRotate();
-            }
-            if (isCrash) 
-            {
-                DeathCam();
-            }
+            if(cameaFreeMode)
+            CameraRotate();
         }
 
+        private void Explouse()
+        {
+            cam.gameObject.transform.SetParent(null);
+        }
     
         private void CameraRotate()
         {
@@ -74,14 +72,7 @@ namespace HeneGames.Airplane
             Quaternion mouseRotation = Quaternion.Euler(currentRotation.y, currentRotation.x, 0);
             Camera.main.transform.rotation = baseRotation * mouseRotation;
 
-            //if (Input.GetMouseButtonDown(1))
-            //{
-            //    Cursor.lockState = CursorLockMode.Locked;
-            //}
-            //if (Input.GetMouseButtonDown(0))
-            //{
-            //    Cursor.lockState = CursorLockMode.Confined;
-            //}
+            
             if (Input.GetMouseButtonDown(2))
             {
                 ResetCameraRotation();
@@ -148,23 +139,6 @@ namespace HeneGames.Airplane
         {
             float _deltatime = Time.deltaTime * 100f;
             cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, _fov, 0.05f * _deltatime);
-        }
-
-        private void Crash()
-        {
-            isCrash = true;
-        }
-
-
-
-        private void DeathCam()
-        {
-            cam.transform.SetParent(null, false);
-            cam.transform.rotation = Quaternion.Euler(90, 0, 0);
-            cam.transform.position = new Vector3(Mathf.Lerp(cam.transform.position.x, transform.position.x,0.1f),
-               Mathf.Lerp(cam.transform.position.y, transform.position.y+20, 0.1f),
-               Mathf.Lerp(cam.transform.position.z, transform.position.z, 0.1f)
-               );
         }
     }
 }

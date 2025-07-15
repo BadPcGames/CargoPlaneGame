@@ -309,7 +309,7 @@ MonoBehaviour:
   crashCollidersRoot: {fileID: 8736839649805236958}
   takeoffLenght: 30
   danger: {fileID: 0}
-  explouse: {fileID: 0}
+  explosionEffectPrefab: {fileID: 1120720590689108962, guid: 5a62c8c9d748b6e4791ad8df972d9076, type: 3}
   obstacleMask:
     serializedVersion: 2
     m_Bits: 4294967295

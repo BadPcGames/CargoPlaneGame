@@ -41,8 +41,10 @@ namespace Assets.scripts.PlaneController
 
         protected override void AiHandler()
         {
+          
             GameObject playerPlane = GameObject.FindGameObjectWithTag("PlayerPlane");
-            target = playerPlane.transform.position;
+            if (playerPlane!=null)
+                target = playerPlane.transform.position;
 
             Vector3 desired = ComputeDesiredDirection();
 

@@ -20,6 +20,9 @@ public class PlayerStats : MonoBehaviour
     public delegate void AirplaneChangedHandler(GameObject newPlane);
     public static event AirplaneChangedHandler OnAirplaneChanged;
 
+    public delegate void PlayerGameOver();
+    public static event PlayerGameOver OnPlayerGameOver;
+
     private GameObject playerUi;
 
     private void Awake()
@@ -33,12 +36,23 @@ public class PlayerStats : MonoBehaviour
 
     private void OnEnable()
     {
+        Plane.GetComponent<SimpleAirPlaneController>().explouse += GameOver;
         WorldGenerator.OnStationsGenerated += SetPlaneToHomeRunway;
     }
 
     private void OnDisable()
     {
+        Plane.GetComponent<SimpleAirPlaneController>().explouse -= GameOver;
         WorldGenerator.OnStationsGenerated -= SetPlaneToHomeRunway;
+    }
+
+    private void GameOver()
+    {
+        OnPlayerGameOver?.Invoke();
+
+        //save plane stats
+
+        //get ready to restart scene
     }
 
     private void SetPlaneToHomeRunway()
@@ -125,7 +139,6 @@ public class PlayerStats : MonoBehaviour
             return "Cargo removed";
         }
     }
-
 
     public void setMoney(float value)
     {

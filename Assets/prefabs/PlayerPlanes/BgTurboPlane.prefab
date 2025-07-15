@@ -575,7 +575,7 @@ MonoBehaviour:
   crashCollidersRoot: {fileID: 8736839649805236958}
   takeoffLenght: 30
   danger: {fileID: 8300000, guid: 4fb0faf435a20644296048b83371c9ad, type: 3}
-  explouse: {fileID: 0}
+  explosionEffectPrefab: {fileID: 1120720590689108962, guid: 5a62c8c9d748b6e4791ad8df972d9076, type: 3}
   obstacleMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -588,7 +588,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6126436154110243637}
   serializedVersion: 4
-  m_Mass: 100
+  m_Mass: 20000
   m_Drag: 0
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}

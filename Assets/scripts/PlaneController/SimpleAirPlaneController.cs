@@ -1,10 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
-using UnityEditorInternal;
-using Cinemachine;
 using System;
-using Unity.VisualScripting;
-using System.Collections;
 using Assets.scripts.PlaneController;
 
 namespace HeneGames.Airplane
@@ -20,6 +16,7 @@ namespace HeneGames.Airplane
         }
 
         public Action crashAction;
+        public Action explouse;
 
         #region Private variables
 
@@ -167,9 +164,9 @@ namespace HeneGames.Airplane
 
         [Header("Crush Sound")]
         [SerializeField] private AudioClip danger;
-        [SerializeField] private AudioClip explouse;
+        public GameObject explosionEffectPrefab;
 
-     
+
 
         private float turboSpeed;
 
@@ -226,14 +223,7 @@ namespace HeneGames.Airplane
                 ChangeWingTrailEffectThickness(0f);
             }
 
-            //Crash
-            if (!planeIsDead && HitSometing())
-            {
-                Crash();
-                Explouse();
-            }
-
-            else if (planeIsDead && HitSometing())
+            if( HitSometing())
             {
                 Explouse();
             }
@@ -647,12 +637,6 @@ namespace HeneGames.Airplane
             return false;
         }
 
-        private void Explouse()
-        {
-            Debug.Log("Bummm");
-        }
-
-
         private void recalculateDebafs()
         {
             float health = gameObject.GetComponent<PlaneStats>().getHealth();
@@ -705,7 +689,6 @@ namespace HeneGames.Airplane
 
         public virtual void Crash()
         {
-            //Invoke action
             crashAction?.Invoke();
 
             //Set rigidbody to non cinematic
@@ -713,26 +696,34 @@ namespace HeneGames.Airplane
             rb.useGravity = true;
             rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
 
-            //Add last speed to rb
-            rb.AddForce(transform.forward * lastEngineSpeed, ForceMode.VelocityChange);
+            rb.AddForce(transform.forward * lastEngineSpeed*0.005f, ForceMode.VelocityChange);
 
-            //Change every collider trigger state and remove rigidbodys
+            planeIsDead = true;      
+        }
+
+        private void Explouse()
+        {
+            if (!planeIsDead)
+            {
+                Crash();
+            }
+
             for (int i = 0; i < airPlaneColliders.Count; i++)
             {
                 airPlaneColliders[i].GetComponent<Collider>().isTrigger = false;
                 Destroy(airPlaneColliders[i].GetComponent<Rigidbody>());
             }
-
-            //Kill player
-            planeIsDead = true;
-            if (!isAIPlane)
+            if (explosionEffectPrefab != null)
             {
-                if (PlaneUi != null)
-                {
-                    PlaneUi.GetComponent<PlaneInterfaceControll>().DeadPlaneInterface();
-                }
+                GameObject explosion = Instantiate(explosionEffectPrefab, transform.position, Quaternion.identity);
+                Destroy(explosion, 5f); 
             }
+
+            explouse?.Invoke();
+            Destroy(gameObject);
         }
+
+
 
         #endregion
 

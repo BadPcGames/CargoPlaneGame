@@ -1,4 +1,6 @@
+using Assets.scripts.PlaneController;
 using HeneGames.Airplane;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using static UnityEngine.Rendering.DebugUI;
@@ -53,11 +55,13 @@ public class PlaneInterfaceControll : MonoBehaviour
 
     private void OnEnable()
     {
+        controller.crashAction += DeadPlaneInterface;
         PlayerStats.OnAirplaneChanged += UpdateTarget;
     }
 
     private void OnDisable()
     {
+        controller.crashAction -= DeadPlaneInterface;
         PlayerStats.OnAirplaneChanged -= UpdateTarget;
     }
 
